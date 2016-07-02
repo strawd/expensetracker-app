@@ -6,4 +6,7 @@
   <string name="NoAccountMessage">No account found. Please contact Dave to set up an account for you or your family.</string>
   <string name="RetrievingAccountInformation">Retrieving account information...</string>
   <string name="RetrievingUserProfile">Retrieving user profile...</string>
+  <string name="Expenses">Expenses</string>
+  <string name="Summary">Summary</string>
+  <string name="Schedule">Schedule</string>
 </resources>

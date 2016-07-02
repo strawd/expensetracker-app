@@ -1,6 +1,8 @@
 ﻿// Copyright 2016 David Straw
 
+using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -20,13 +22,17 @@ namespace ExpenseTrackerApp
         private const string AccountIdKey = "AccountId";
         private const string AccountNameKey = "AccountName";
         private const string UserProfileIdKey = "UserProfileId";
+        private const string SelectedTabIndexKey = "SelectedTabIndex";
 
         MobileServiceClient _client;
         Account _account;
         UserProfile _userProfile;
+        CancellationTokenSource _destroyCancellationSource;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
+            _destroyCancellationSource = new CancellationTokenSource();
+
             base.OnCreate(savedInstanceState);
 
             // Set our view from the "main" layout resource
@@ -39,13 +45,22 @@ namespace ExpenseTrackerApp
 
             await AuthenticateAsync(savedInstanceState);
 
+            if (_destroyCancellationSource.IsCancellationRequested)
+                return;
+
             progressText.Text = GetString(Resource.String.RetrievingUserProfile);
 
             await InitializeUserProfileAsync(savedInstanceState);
 
+            if (_destroyCancellationSource.IsCancellationRequested)
+                return;
+
             progressText.Text = GetString(Resource.String.RetrievingAccountInformation);
 
             await InitializeAccountAsync(savedInstanceState);
+
+            if (_destroyCancellationSource.IsCancellationRequested)
+                return;
 
             if (_account?.Id == null)
             {
@@ -59,6 +74,15 @@ namespace ExpenseTrackerApp
             progressText.Visibility = ViewStates.Gone;
 
             Title = _account.Name;
+
+            InitializeTabs(savedInstanceState);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            _destroyCancellationSource?.Cancel();
         }
 
         protected override void OnSaveInstanceState(Bundle outState)
@@ -79,6 +103,8 @@ namespace ExpenseTrackerApp
             {
                 outState.PutString(UserProfileIdKey, _userProfile.Id);
             }
+
+            outState.PutInt(SelectedTabIndexKey, ActionBar.SelectedNavigationIndex);
 
             base.OnSaveInstanceState(outState);
         }
@@ -136,6 +162,46 @@ namespace ExpenseTrackerApp
                     await userProfileTable.InsertAsync(_userProfile);
                 }
             }
+        }
+
+        private void InitializeTabs(Bundle savedInstanceState)
+        {
+            var summaryTab = ActionBar.NewTab()
+                .SetText(Resource.String.Summary);
+
+            var expensesTab = ActionBar.NewTab()
+                .SetText(Resource.String.Expenses);
+
+            var scheduleTab = ActionBar.NewTab()
+                .SetText(Resource.String.Schedule);
+
+            summaryTab.TabSelected += OnSummaryTabSelected;
+            expensesTab.TabSelected += OnExpensesTabSelected;
+            scheduleTab.TabSelected += OnScheduleTabSelected;
+
+            ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
+            ActionBar.AddTab(summaryTab);
+            ActionBar.AddTab(expensesTab);
+            ActionBar.AddTab(scheduleTab);
+
+            int selectedTabIndex = Math.Max(0, Math.Min(ActionBar.TabCount - 1, savedInstanceState?.GetInt(SelectedTabIndexKey) ?? 0));
+
+            ActionBar.SelectTab(ActionBar.GetTabAt(selectedTabIndex));
+        }
+
+        private void OnSummaryTabSelected(object sender, ActionBar.TabEventArgs e)
+        {
+            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new SummaryFragment());
+        }
+
+        private void OnExpensesTabSelected(object sender, ActionBar.TabEventArgs e)
+        {
+            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new ExpensesFragment());
+        }
+
+        private void OnScheduleTabSelected(object sender, ActionBar.TabEventArgs e)
+        {
+            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new ScheduleFragment());
         }
     }
 }

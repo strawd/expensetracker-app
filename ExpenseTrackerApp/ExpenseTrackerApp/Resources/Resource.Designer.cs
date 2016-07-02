@@ -60,14 +60,14 @@ namespace ExpenseTrackerApp
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f050002
+			public const int FragmentContainer = 2131034114;
+			
 			// aapt resource value: 0x7f050000
 			public const int MainProgressBar = 2131034112;
 			
 			// aapt resource value: 0x7f050001
 			public const int MainProgressText = 2131034113;
-			
-			// aapt resource value: 0x7f050002
-			public const int textView1 = 2131034114;
 			
 			static Id()
 			{
@@ -83,10 +83,19 @@ namespace ExpenseTrackerApp
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int Main = 2130903040;
+			public const int Expenses = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int NoAccount = 2130903041;
+			public const int Main = 2130903041;
+			
+			// aapt resource value: 0x7f030002
+			public const int NoAccount = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public const int Schedule = 2130903043;
+			
+			// aapt resource value: 0x7f030004
+			public const int Summary = 2130903044;
 			
 			static Layout()
 			{
@@ -104,6 +113,9 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f040000
 			public const int ApplicationName = 2130968576;
 			
+			// aapt resource value: 0x7f040005
+			public const int Expenses = 2130968581;
+			
 			// aapt resource value: 0x7f040002
 			public const int NoAccountMessage = 2130968578;
 			
@@ -115,6 +127,12 @@ namespace ExpenseTrackerApp
 			
 			// aapt resource value: 0x7f040004
 			public const int RetrievingUserProfile = 2130968580;
+			
+			// aapt resource value: 0x7f040007
+			public const int Schedule = 2130968583;
+			
+			// aapt resource value: 0x7f040006
+			public const int Summary = 2130968582;
 			
 			static String()
 			{
