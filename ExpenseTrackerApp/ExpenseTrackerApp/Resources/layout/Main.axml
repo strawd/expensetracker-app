@@ -3,9 +3,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <Button
-        android:id="@+id/MyButton"
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Hello" />
+        android:id="@+id/MainProgressBar"
+        android:indeterminate="true"
+        android:layout_margin="15dip" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/MainProgressText"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

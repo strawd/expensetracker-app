@@ -4,7 +4,7 @@ using System;
 
 namespace ExpenseTrackerApp.DataObjects
 {
-    public class UserProfile
+    class UserProfile
     {
         public UserProfile()
         {

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 David Straw -->
 <resources>
-    <string name="Hello">Hello World, Click Me!</string>
-    <string name="ApplicationName">ExpenseTrackerApp</string>
+  <string name="ApplicationName">Expense Tracker</string>
+  <string name="NoAccountTitle">No Account</string>
+  <string name="NoAccountMessage">No account found. Please contact Dave to set up an account for you or your family.</string>
+  <string name="RetrievingAccountInformation">Retrieving account information...</string>
+  <string name="RetrievingUserProfile">Retrieving user profile...</string>
 </resources>
