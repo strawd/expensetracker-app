@@ -13,7 +13,10 @@ namespace ExpenseTrackerApp
     [Activity(Label = "ExpenseTrackerApp", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
-        MobileServiceClient client;
+        private const string CurrentUserIdKey = "CurrentUserId";
+        private const string CurrentUserAuthTokenKey = "CurrentUserAuthToken";
+
+        MobileServiceClient _client;
 
         protected override async void OnCreate(Bundle bundle)
         {
@@ -22,9 +25,21 @@ namespace ExpenseTrackerApp
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
-            client = new MobileServiceClient("https://expensetracker.azurewebsites.net");
+            _client = new MobileServiceClient("https://expensetracker.azurewebsites.net");
 
-            await client.LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
+            string currentUserId = bundle?.GetString(CurrentUserIdKey);
+            string currentUserAuthToken = bundle?.GetString(CurrentUserAuthTokenKey);
+
+            if (!string.IsNullOrEmpty(currentUserId) && !string.IsNullOrEmpty(currentUserAuthToken))
+            {
+                var currentUser = new MobileServiceUser(currentUserId);
+                currentUser.MobileServiceAuthenticationToken = currentUserAuthToken;
+                _client.CurrentUser = currentUser;
+            }
+            else
+            {
+                await _client.LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
+            }
 
             // Get our button from the layout resource,
             // and attach an event to it
@@ -36,7 +51,7 @@ namespace ExpenseTrackerApp
                 {
                     button.Text = "Getting user profiles...";
 
-                    IMobileServiceTable<UserProfile> userProfileTable = client.GetTable<UserProfile>();
+                    IMobileServiceTable<UserProfile> userProfileTable = _client.GetTable<UserProfile>();
 
                     var profiles = await userProfileTable.ToListAsync();
 
@@ -56,6 +71,17 @@ namespace ExpenseTrackerApp
                     button.Text = ex.GetType().Name + ": " + ex.Message;
                 }
             };
+        }
+
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            if (_client?.CurrentUser != null)
+            {
+                outState.PutString(CurrentUserIdKey, _client.CurrentUser.UserId);
+                outState.PutString(CurrentUserAuthTokenKey, _client.CurrentUser.MobileServiceAuthenticationToken);
+            }
+
+            base.OnSaveInstanceState(outState);
         }
     }
 }
