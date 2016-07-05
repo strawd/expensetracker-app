@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataObjects\Account.cs" />
+    <Compile Include="DataObjects\ExpenseItem.cs" />
     <Compile Include="DataObjects\UserProfile.cs" />
     <Compile Include="ExpensesFragment.cs" />
     <Compile Include="MainActivity.cs" />

@@ -41,23 +41,42 @@ namespace ExpenseTrackerApp
             var progressBar = FindViewById<ProgressBar>(Resource.Id.MainProgressBar);
             var progressText = FindViewById<TextView>(Resource.Id.MainProgressText);
 
-            _client = new MobileServiceClient("https://expensetracker.azurewebsites.net");
+            try
+            {
+                _client = new MobileServiceClient("https://expensetracker.azurewebsites.net");
 
-            await AuthenticateAsync(savedInstanceState);
+                await AuthenticateAsync(savedInstanceState);
 
-            if (_destroyCancellationSource.IsCancellationRequested)
-                return;
+                if (_destroyCancellationSource.IsCancellationRequested)
+                    return;
 
-            progressText.Text = GetString(Resource.String.RetrievingUserProfile);
+                progressText.Text = GetString(Resource.String.RetrievingUserProfile);
 
-            await InitializeUserProfileAsync(savedInstanceState);
+                await InitializeUserProfileAsync(savedInstanceState);
 
-            if (_destroyCancellationSource.IsCancellationRequested)
-                return;
+                if (_destroyCancellationSource.IsCancellationRequested)
+                    return;
 
-            progressText.Text = GetString(Resource.String.RetrievingAccountInformation);
+                progressText.Text = GetString(Resource.String.RetrievingAccountInformation);
 
-            await InitializeAccountAsync(savedInstanceState);
+                await InitializeAccountAsync(savedInstanceState);
+            }
+            catch (Exception ex)
+            {
+                if (!_destroyCancellationSource.IsCancellationRequested)
+                {
+                    var alert = new AlertDialog.Builder(this).Create();
+                    alert.SetMessage(ex.Message);
+
+                    alert.DismissEvent += (sender, e) =>
+                    {
+                        Finish();
+                    };
+
+                    alert.Show();
+                    return;
+                }
+            }
 
             if (_destroyCancellationSource.IsCancellationRequested)
                 return;
@@ -196,7 +215,7 @@ namespace ExpenseTrackerApp
 
         private void OnExpensesTabSelected(object sender, ActionBar.TabEventArgs e)
         {
-            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new ExpensesFragment());
+            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new ExpensesFragment(_client));
         }
 
         private void OnScheduleTabSelected(object sender, ActionBar.TabEventArgs e)
