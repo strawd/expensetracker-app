@@ -83,6 +83,7 @@
     <Compile Include="ExpensesFragment.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="NoAccountActivity.cs" />
+    <Compile Include="PersistedDataFragment.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduleFragment.cs" />
@@ -112,7 +113,9 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\Strings.xml" />
+    <AndroidResource Include="Resources\values\Strings.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Icon.png" />

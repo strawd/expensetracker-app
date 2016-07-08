@@ -3,55 +3,83 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Android.App;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
 using ExpenseTrackerApp.DataObjects;
-using Microsoft.WindowsAzure.MobileServices;
 
 namespace ExpenseTrackerApp
 {
     public class ExpensesFragment : Fragment
     {
-        private MobileServiceClient _client;
-
-        public ExpensesFragment(MobileServiceClient client)
-        {
-            _client = client;
-        }
+        PersistedDataFragment _persistedDataFragment;
+        CancellationTokenSource _destroyCancellationSource;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            _persistedDataFragment = FragmentManager.FindFragmentByTag<PersistedDataFragment>(MainActivity.PersistedDataFragmentTag);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return inflater.Inflate(Resource.Layout.Expenses, container, false);
+            _destroyCancellationSource?.Dispose();
+            _destroyCancellationSource = new CancellationTokenSource();
+
+            var view = inflater.Inflate(Resource.Layout.Expenses, container, false);
+
+#pragma warning disable CS4014 // Intentionally fire-and-forget
+            InitializeAsync(view);
+#pragma warning restore CS4014
+
+            return view;
         }
 
-        public override async void OnStart()
+        public override void OnDestroyView()
         {
-            base.OnStart();
+            base.OnDestroyView();
 
-            var listView = View.FindViewById<ListView>(Resource.Id.ExpensesListView);
+            _destroyCancellationSource?.Cancel();
+        }
 
-            IEnumerable<ExpenseItem> expenseItems;
+        private async Task InitializeAsync(View view)
+        {
+            if (_destroyCancellationSource.IsCancellationRequested)
+                return;
+
+            var listView = view.FindViewById<ListView>(Resource.Id.ExpensesListView);
+            var progressBar = view.FindViewById<ProgressBar>(Resource.Id.ExpensesProgressBar);
+            var progressText = view.FindViewById<TextView>(Resource.Id.ExpensesProgressText);
+
+            progressText.Text = GetString(Resource.String.RetrievingExpenses);
+
+            List<ExpenseItem> expenseItems;
 
             try
             {
-                var expenseItemTable = _client.GetTable<ExpenseItem>();
-                expenseItems = await expenseItemTable.ToListAsync();
+                expenseItems = await _persistedDataFragment.GetExpenseItemsAsync();
             }
             catch (Exception ex)
             {
+                if (_destroyCancellationSource.IsCancellationRequested)
+                    return;
+
                 var alert = new AlertDialog.Builder(Context).Create();
                 alert.SetMessage(ex.Message);
 
                 alert.Show();
                 return;
             }
+
+            if (_destroyCancellationSource.IsCancellationRequested)
+                return;
+
+            progressBar.Visibility = ViewStates.Gone;
+            progressText.Visibility = ViewStates.Gone;
 
             var expenseItemStrings = expenseItems.Select(item => $"{item.Amount}: {item.Description}");
             listView.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleListItem1, expenseItemStrings.ToArray());
