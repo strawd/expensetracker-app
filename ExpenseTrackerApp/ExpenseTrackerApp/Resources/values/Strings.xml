@@ -10,4 +10,5 @@
   <string name="Expenses">Expenses</string>
   <string name="Summary">Summary</string>
   <string name="Schedule">Schedule</string>
+  <string name="AddExpense">Add Expense</string>
 </resources>

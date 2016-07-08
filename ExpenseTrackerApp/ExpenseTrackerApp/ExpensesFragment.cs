@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -54,6 +55,7 @@ namespace ExpenseTrackerApp
             var listView = view.FindViewById<ListView>(Resource.Id.ExpensesListView);
             var progressBar = view.FindViewById<ProgressBar>(Resource.Id.ExpensesProgressBar);
             var progressText = view.FindViewById<TextView>(Resource.Id.ExpensesProgressText);
+            var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpenseButton);
 
             progressText.Text = GetString(Resource.String.RetrievingExpenses);
 
@@ -83,6 +85,15 @@ namespace ExpenseTrackerApp
 
             var expenseItemStrings = expenseItems.Select(item => $"{item.Amount}: {item.Description}");
             listView.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleListItem1, expenseItemStrings.ToArray());
+
+            addButton.Visibility = ViewStates.Visible;
+            addButton.Click += OnAddButtonClick;
+        }
+
+        private void OnAddButtonClick(object sender, EventArgs e)
+        {
+            var intent = new Intent(View.Context, typeof(AddExpenseActivity));
+            View.Context.StartActivity(intent);
         }
     }
 }

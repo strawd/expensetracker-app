@@ -45,7 +45,10 @@ namespace ExpenseTrackerApp
 		{
 			
 			// aapt resource value: 0x7f020000
-			public const int Icon = 2130837504;
+			public const int AddButton = 2130837504;
+			
+			// aapt resource value: 0x7f020001
+			public const int Icon = 2130837505;
 			
 			static Drawable()
 			{
@@ -60,6 +63,9 @@ namespace ExpenseTrackerApp
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f050003
+			public const int AddExpenseButton = 2131034115;
+			
 			// aapt resource value: 0x7f050002
 			public const int ExpensesListView = 2131034114;
 			
@@ -69,17 +75,14 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f050001
 			public const int ExpensesProgressText = 2131034113;
 			
-			// aapt resource value: 0x7f050005
-			public const int FragmentContainer = 2131034117;
-			
-			// aapt resource value: 0x7f050003
-			public const int MainProgressBar = 2131034115;
+			// aapt resource value: 0x7f050006
+			public const int FragmentContainer = 2131034118;
 			
 			// aapt resource value: 0x7f050004
-			public const int MainProgressText = 2131034116;
+			public const int MainProgressBar = 2131034116;
 			
-			// aapt resource value: 0x7f050006
-			public const int textView1 = 2131034118;
+			// aapt resource value: 0x7f050005
+			public const int MainProgressText = 2131034117;
 			
 			static Id()
 			{
@@ -95,19 +98,22 @@ namespace ExpenseTrackerApp
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int Expenses = 2130903040;
+			public const int AddExpense = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int Main = 2130903041;
+			public const int Expenses = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int NoAccount = 2130903042;
+			public const int Main = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int Schedule = 2130903043;
+			public const int NoAccount = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int Summary = 2130903044;
+			public const int Schedule = 2130903044;
+			
+			// aapt resource value: 0x7f030005
+			public const int Summary = 2130903045;
 			
 			static Layout()
 			{
@@ -121,6 +127,9 @@ namespace ExpenseTrackerApp
 		
 		public partial class String
 		{
+			
+			// aapt resource value: 0x7f040009
+			public const int AddExpense = 2130968585;
 			
 			// aapt resource value: 0x7f040000
 			public const int ApplicationName = 2130968576;
