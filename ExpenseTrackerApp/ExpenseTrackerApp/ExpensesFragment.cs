@@ -35,6 +35,9 @@ namespace ExpenseTrackerApp
 
             var view = inflater.Inflate(Resource.Layout.Expenses, container, false);
 
+            var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpenseButton);
+            addButton.Click += OnAddButtonClick;
+
 #pragma warning disable CS4014 // Intentionally fire-and-forget
             InitializeExpenseItemsAsync(view);
 #pragma warning restore CS4014
@@ -92,14 +95,12 @@ namespace ExpenseTrackerApp
             listView.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleListItem1, expenseItemStrings.ToArray());
 
             addButton.Visibility = ViewStates.Visible;
-            addButton.Click += OnAddButtonClick;
         }
 
         private void OnAddButtonClick(object sender, EventArgs e)
         {
             var intent = new Intent(View.Context, typeof(AddExpenseActivity));
             StartActivityForResult(intent, AddExpenseRequestCode);
-            View.Context.StartActivity(intent);
         }
 
         public override async void OnActivityResult(int requestCode, Result resultCode, Intent data)

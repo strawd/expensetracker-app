@@ -15,13 +15,9 @@ namespace ExpenseTrackerApp
         public const string DescriptionKey = "AddExpenseDescription";
         public const string DateInTicksKey = "AddExpenseDateInTicks";
 
-        PersistedDataFragment _persistedDataFragment;
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            _persistedDataFragment = FragmentManager.FindFragmentByTag<PersistedDataFragment>(MainActivity.PersistedDataFragmentTag);
 
             SetContentView(Resource.Layout.AddExpense);
 
@@ -61,7 +57,7 @@ namespace ExpenseTrackerApp
             var datePicker = FindViewById<DatePicker>(Resource.Id.AddExpenseDatePicker);
 
             decimal amount;
-            if (!decimal.TryParse(amountText.Text, out amount) || amount <= 0 || amount > 1000000m)
+            if (!decimal.TryParse(amountText.Text, out amount) || amount <= 0m || amount > 1000000m)
             {
                 ShowValidationError(GetString(Resource.String.AmountValidationMessage));
                 return;
@@ -75,7 +71,7 @@ namespace ExpenseTrackerApp
             }
 
             var resultIntent = new Intent();
-            resultIntent.PutExtra(AmountInCentsKey, (int)(amount * 100));
+            resultIntent.PutExtra(AmountInCentsKey, (int)(amount * 100m));
             resultIntent.PutExtra(DescriptionKey, description);
             resultIntent.PutExtra(DateInTicksKey, datePicker.DateTime.Ticks);
 
