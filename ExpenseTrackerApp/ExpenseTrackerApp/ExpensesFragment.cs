@@ -16,6 +16,8 @@ namespace ExpenseTrackerApp
 {
     public class ExpensesFragment : Fragment
     {
+        const int AddExpenseRequestCode = 1;
+
         PersistedDataFragment _persistedDataFragment;
         CancellationTokenSource _destroyCancellationSource;
 
@@ -34,7 +36,7 @@ namespace ExpenseTrackerApp
             var view = inflater.Inflate(Resource.Layout.Expenses, container, false);
 
 #pragma warning disable CS4014 // Intentionally fire-and-forget
-            InitializeAsync(view);
+            InitializeExpenseItemsAsync(view);
 #pragma warning restore CS4014
 
             return view;
@@ -47,15 +49,18 @@ namespace ExpenseTrackerApp
             _destroyCancellationSource?.Cancel();
         }
 
-        private async Task InitializeAsync(View view)
+        private async Task InitializeExpenseItemsAsync(View view)
         {
-            if (_destroyCancellationSource.IsCancellationRequested)
-                return;
+            var localDestroyCancellationSource = _destroyCancellationSource;
 
             var listView = view.FindViewById<ListView>(Resource.Id.ExpensesListView);
             var progressBar = view.FindViewById<ProgressBar>(Resource.Id.ExpensesProgressBar);
             var progressText = view.FindViewById<TextView>(Resource.Id.ExpensesProgressText);
             var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpenseButton);
+
+            progressBar.Visibility = ViewStates.Visible;
+            progressText.Visibility = ViewStates.Visible;
+            addButton.Visibility = ViewStates.Invisible;
 
             progressText.Text = GetString(Resource.String.RetrievingExpenses);
 
@@ -67,7 +72,7 @@ namespace ExpenseTrackerApp
             }
             catch (Exception ex)
             {
-                if (_destroyCancellationSource.IsCancellationRequested)
+                if (localDestroyCancellationSource.IsCancellationRequested)
                     return;
 
                 var alert = new AlertDialog.Builder(Context).Create();
@@ -77,7 +82,7 @@ namespace ExpenseTrackerApp
                 return;
             }
 
-            if (_destroyCancellationSource.IsCancellationRequested)
+            if (localDestroyCancellationSource.IsCancellationRequested)
                 return;
 
             progressBar.Visibility = ViewStates.Gone;
@@ -93,7 +98,62 @@ namespace ExpenseTrackerApp
         private void OnAddButtonClick(object sender, EventArgs e)
         {
             var intent = new Intent(View.Context, typeof(AddExpenseActivity));
+            StartActivityForResult(intent, AddExpenseRequestCode);
             View.Context.StartActivity(intent);
+        }
+
+        public override async void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            var localDestroyCancellationSource = _destroyCancellationSource;
+
+            if (requestCode == AddExpenseRequestCode && resultCode == Result.Ok)
+            {
+                int amountInCents = data.GetIntExtra(AddExpenseActivity.AmountInCentsKey, 0);
+                string description = data.GetStringExtra(AddExpenseActivity.DescriptionKey);
+                int dateInTicks = data.GetIntExtra(AddExpenseActivity.DateInTicksKey, 0);
+
+                var progressDialog = new ProgressDialog(Context);
+                progressDialog.Indeterminate = true;
+                progressDialog.SetTitle(Resource.String.AddingExpense);
+                progressDialog.Show();
+
+                var expenseItem = new ExpenseItem
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Amount = amountInCents / 100m,
+                    Description = description,
+                    Date = new DateTimeOffset(new DateTime(dateInTicks, DateTimeKind.Local))
+                };
+
+                try
+                {
+                    await _persistedDataFragment.InsertExpenseItemAsync(expenseItem);
+                }
+                catch (Exception ex)
+                {
+                    if (localDestroyCancellationSource.IsCancellationRequested)
+                        return;
+
+                    progressDialog.Hide();
+
+                    var alert = new AlertDialog.Builder(Context).Create();
+                    alert.SetMessage(ex.Message);
+
+                    alert.Show();
+                    return;
+                }
+
+                _persistedDataFragment.InvalidateExpenseItems();
+
+                if (localDestroyCancellationSource.IsCancellationRequested)
+                    return;
+
+                progressDialog.Hide();
+
+                await InitializeExpenseItemsAsync(View);
+            }
         }
     }
 }

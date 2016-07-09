@@ -54,6 +54,17 @@ namespace ExpenseTrackerApp
                 (_getExpenseItemsTask = ExecuteGetExpenseItemsAsync());
         }
 
+        public Task InsertExpenseItemAsync(ExpenseItem expenseItem)
+        {
+            var expenseItemTable = _client.GetTable<ExpenseItem>();
+            return expenseItemTable.InsertAsync(expenseItem);
+        }
+
+        public void InvalidateExpenseItems()
+        {
+            _getExpenseItemsTask = null;
+        }
+
         private async Task<UserProfile> ExecuteGetOrCreateUserProfileAsync()
         {
             var userProfileTable = _client.GetTable<UserProfile>();

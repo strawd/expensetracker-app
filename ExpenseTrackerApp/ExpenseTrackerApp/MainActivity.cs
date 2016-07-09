@@ -26,6 +26,8 @@ namespace ExpenseTrackerApp
             _destroyCancellationSource?.Dispose();
             _destroyCancellationSource = new CancellationTokenSource();
 
+            var localDestroyCancellationSource = _destroyCancellationSource;
+
             base.OnCreate(savedInstanceState);
 
             _persistedDataFragment = FragmentManager.FindFragmentByTag<PersistedDataFragment>(PersistedDataFragmentTag);
@@ -52,14 +54,14 @@ namespace ExpenseTrackerApp
             {
                 await _persistedDataFragment.AuthenticateAsync(this);
 
-                if (_destroyCancellationSource.IsCancellationRequested)
+                if (localDestroyCancellationSource.IsCancellationRequested)
                     return;
 
                 progressText.Text = GetString(Resource.String.RetrievingUserProfile);
 
                 await _persistedDataFragment.GetOrCreateUserProfileAsync();
 
-                if (_destroyCancellationSource.IsCancellationRequested)
+                if (localDestroyCancellationSource.IsCancellationRequested)
                     return;
 
                 progressText.Text = GetString(Resource.String.RetrievingAccountInformation);
@@ -68,7 +70,7 @@ namespace ExpenseTrackerApp
             }
             catch (Exception ex)
             {
-                if (!_destroyCancellationSource.IsCancellationRequested)
+                if (!localDestroyCancellationSource.IsCancellationRequested)
                 {
                     var alert = new AlertDialog.Builder(this).Create();
                     alert.SetMessage(ex.Message);
@@ -84,7 +86,7 @@ namespace ExpenseTrackerApp
                 return;
             }
 
-            if (_destroyCancellationSource.IsCancellationRequested)
+            if (localDestroyCancellationSource.IsCancellationRequested)
                 return;
 
             if (account?.Id == null)

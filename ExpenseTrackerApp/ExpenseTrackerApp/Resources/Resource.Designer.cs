@@ -63,9 +63,6 @@ namespace ExpenseTrackerApp
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f06000a
-			public const int AddExpense = 2131099658;
-			
 			// aapt resource value: 0x7f060000
 			public const int AddExpenseAmountText = 2131099648;
 			
@@ -77,6 +74,9 @@ namespace ExpenseTrackerApp
 			
 			// aapt resource value: 0x7f060001
 			public const int AddExpenseDescriptionText = 2131099649;
+			
+			// aapt resource value: 0x7f06000a
+			public const int AddExpenseMenuItem = 2131099658;
 			
 			// aapt resource value: 0x7f060005
 			public const int ExpensesListView = 2131099653;
@@ -162,17 +162,29 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f04000a
 			public const int AddExpenseCommand = 2130968586;
 			
+			// aapt resource value: 0x7f040010
+			public const int AddingExpense = 2130968592;
+			
 			// aapt resource value: 0x7f04000b
 			public const int AmountHint = 2130968587;
 			
+			// aapt resource value: 0x7f04000e
+			public const int AmountValidationMessage = 2130968590;
+			
 			// aapt resource value: 0x7f040000
 			public const int ApplicationName = 2130968576;
+			
+			// aapt resource value: 0x7f040011
+			public const int Close = 2130968593;
 			
 			// aapt resource value: 0x7f04000d
 			public const int DateHint = 2130968589;
 			
 			// aapt resource value: 0x7f04000c
 			public const int DescriptionHint = 2130968588;
+			
+			// aapt resource value: 0x7f04000f
+			public const int DescriptionValidationMessage = 2130968591;
 			
 			// aapt resource value: 0x7f040006
 			public const int Expenses = 2130968582;

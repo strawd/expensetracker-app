@@ -15,4 +15,8 @@
   <string name="AmountHint">Amount</string>
   <string name="DescriptionHint">Description</string>
   <string name="DateHint">Date</string>
+  <string name="AmountValidationMessage">Please enter an amount larger than zero and less than 1,000,000.</string>
+  <string name="DescriptionValidationMessage">Please enter a description between 1 and 200 characters.</string>
+  <string name="AddingExpense">Adding expense...</string>
+  <string name="Close">Close</string>
 </resources>
