@@ -2,6 +2,7 @@
 
 using Android.App;
 using Android.OS;
+using Android.Views;
 
 namespace ExpenseTrackerApp
 {
@@ -13,6 +14,12 @@ namespace ExpenseTrackerApp
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.AddExpense);
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.AddExpenseMenu, menu);
+            return true;
         }
     }
 }

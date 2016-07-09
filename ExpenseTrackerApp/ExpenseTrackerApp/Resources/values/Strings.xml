@@ -11,4 +11,8 @@
   <string name="Summary">Summary</string>
   <string name="Schedule">Schedule</string>
   <string name="AddExpense">Add Expense</string>
+  <string name="AddExpenseCommand">Add</string>
+  <string name="AmountHint">Amount</string>
+  <string name="DescriptionHint">Description</string>
+  <string name="DateHint">Date</string>
 </resources>
