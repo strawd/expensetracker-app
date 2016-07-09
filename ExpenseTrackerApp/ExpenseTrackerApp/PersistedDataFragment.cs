@@ -88,7 +88,10 @@ namespace ExpenseTrackerApp
         private Task<List<ExpenseItem>> ExecuteGetExpenseItemsAsync()
         {
             var expenseItemTable = _client.GetTable<ExpenseItem>();
-            return expenseItemTable.ToListAsync();
+            return expenseItemTable.CreateQuery()
+                .OrderByDescending(x => x.Date)
+                .Take(100)
+                .ToListAsync();
         }
     }
 }

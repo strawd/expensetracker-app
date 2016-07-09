@@ -22,7 +22,8 @@
             android:hint="@string/DescriptionHint"
             android:layout_marginBottom="15dp"
             android:singleLine="true"
-            android:imeOptions="actionSend" />
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences" />
         <DatePicker
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -91,7 +91,7 @@ namespace ExpenseTrackerApp
             progressBar.Visibility = ViewStates.Gone;
             progressText.Visibility = ViewStates.Gone;
 
-            var expenseItemStrings = expenseItems.Select(item => $"{item.Amount}: {item.Description}");
+            var expenseItemStrings = expenseItems.Select(item => $"{item.Date.ToString("d")} ${item.Amount}: {item.Description}");
             listView.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleListItem1, expenseItemStrings.ToArray());
 
             addButton.Visibility = ViewStates.Visible;
@@ -113,7 +113,7 @@ namespace ExpenseTrackerApp
             {
                 int amountInCents = data.GetIntExtra(AddExpenseActivity.AmountInCentsKey, 0);
                 string description = data.GetStringExtra(AddExpenseActivity.DescriptionKey);
-                int dateInTicks = data.GetIntExtra(AddExpenseActivity.DateInTicksKey, 0);
+                long dateInTicks = data.GetLongExtra(AddExpenseActivity.DateInTicksKey, 0);
 
                 var progressDialog = new ProgressDialog(Context);
                 progressDialog.Indeterminate = true;
