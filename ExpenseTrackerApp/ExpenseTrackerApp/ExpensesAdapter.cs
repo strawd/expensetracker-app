@@ -26,7 +26,7 @@ namespace ExpenseTrackerApp
 
             for (int i = 0; i < _expenseItems.Count; i++)
             {
-                var key = _expenseItems[i].Date.ToString("d");
+                var key = _expenseItems[i].Date.ToString("D");
                 if (!_sectionIndexMap.ContainsKey(key))
                     _sectionIndexMap[key] = i;
             }
@@ -46,7 +46,13 @@ namespace ExpenseTrackerApp
 
         public int GetSectionForPosition(int position)
         {
-            return _sectionIndexMap.Last(pair => pair.Value < position).Value;
+            for (int sectionIndex = _sections.Length - 1; sectionIndex > 0; sectionIndex--)
+            {
+                if (_sectionIndexMap[_sections[sectionIndex]] <= position)
+                    return sectionIndex;
+            }
+
+            return 0;
         }
 
         public Java.Lang.Object[] GetSections()
@@ -72,7 +78,8 @@ namespace ExpenseTrackerApp
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            bool hasSectionHeader = _sectionIndexMap.ContainsValue(position);
+            int sectionIndex = GetSectionForPosition(position);
+            bool hasSectionHeader = _sectionIndexMap[_sections[sectionIndex]] == position;
 
             View view = convertView;
             if (view == null)
@@ -92,7 +99,7 @@ namespace ExpenseTrackerApp
             if (hasSectionHeader)
             {
                 var sectionText = view.FindViewById<TextView>(Resource.Id.ExpenseItemSectionText);
-                sectionText.Text = _expenseItems[position].Date.ToString("d");
+                sectionText.Text = _sections[sectionIndex];
             }
 
             return view;
