@@ -21,4 +21,6 @@
   <string name="Close">Close</string>
   <string name="DeleteExpenseCommand">Delete</string>
   <string name="EditExpenseCommand">Edit</string>
+  <string name="DeleteExpenseConfirmation">Delete expense \'{0}\'?</string>
+  <string name="DeletingExpense">Deleting expense...</string>
 </resources>

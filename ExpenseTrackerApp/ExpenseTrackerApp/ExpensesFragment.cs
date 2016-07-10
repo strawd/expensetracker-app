@@ -175,6 +175,49 @@ namespace ExpenseTrackerApp
             }
         }
 
+        private void DeleteSelectedExpense()
+        {
+            var listView = View.FindViewById<ListView>(Resource.Id.ExpensesListView);
+            var adapter = listView.Adapter as ExpensesAdapter;
+
+            if (listView.CheckedItemCount > 0 && adapter != null)
+            {
+                ExpenseItem selectedExpense = adapter[listView.CheckedItemPosition];
+
+                var alert = new AlertDialog.Builder(Context).Create();
+                alert.SetMessage(string.Format(GetString(Resource.String.DeleteExpenseConfirmation), selectedExpense.Description));
+                alert.SetButton(
+                    GetString(Resource.String.DeleteExpenseCommand),
+                    async (sender, e) => { await ExecuteDeleteExpenseAsync(selectedExpense); });
+                alert.SetButton2(
+                    GetString(Android.Resource.String.Cancel),
+                    (sender, e) => { alert.Cancel(); });
+
+                alert.Show();
+            }
+        }
+
+        private async Task ExecuteDeleteExpenseAsync(ExpenseItem expenseItem)
+        {
+            var localDestroyCancellationSource = _destroyCancellationSource;
+
+            var progressDialog = new ProgressDialog(Context);
+            progressDialog.Indeterminate = true;
+            progressDialog.SetTitle(Resource.String.DeletingExpense);
+            progressDialog.Show();
+
+            await _persistedDataFragment.DeleteExpenseItemAsync(expenseItem);
+
+            _persistedDataFragment.InvalidateExpenseItems();
+
+            if (localDestroyCancellationSource.IsCancellationRequested)
+                return;
+
+            progressDialog.Hide();
+
+            await InitializeExpenseItemsAsync(View);
+        }
+
         private class ActionModeCallback : Java.Lang.Object, ActionMode.ICallback
         {
             ExpensesFragment _expensesFragment;
@@ -193,7 +236,8 @@ namespace ExpenseTrackerApp
                 }
                 if (item.ItemId == Resource.Id.DeleteExpenseMenuItem)
                 {
-                    // TODO
+                    _expensesFragment.DeleteSelectedExpense();
+
                     return true;
                 }
                 return false;

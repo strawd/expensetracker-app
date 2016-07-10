@@ -8,33 +8,33 @@ using Android.Widget;
 
 namespace ExpenseTrackerApp
 {
-    class CheckableRelativeLayout : RelativeLayout, ICheckable
+    class CheckableLinearLayout : LinearLayout, ICheckable
     {
         static readonly int[] CheckedState = { Android.Resource.Attribute.StatePressed };
 
         bool _checked;
 
-        public CheckableRelativeLayout(Context context)
+        public CheckableLinearLayout(Context context)
             : base(context)
         {
         }
 
-        public CheckableRelativeLayout(Context context, IAttributeSet attrs)
+        public CheckableLinearLayout(Context context, IAttributeSet attrs)
             : base(context, attrs)
         {
         }
 
-        public CheckableRelativeLayout(Context context, IAttributeSet attrs, int defStyleAttr)
+        public CheckableLinearLayout(Context context, IAttributeSet attrs, int defStyleAttr)
             : base(context, attrs, defStyleAttr)
         {
         }
 
-        public CheckableRelativeLayout(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes)
+        public CheckableLinearLayout(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes)
             : base(context, attrs, defStyleAttr, defStyleRes)
         {
         }
 
-        protected CheckableRelativeLayout(IntPtr javaReference, JniHandleOwnership transfer)
+        protected CheckableLinearLayout(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
         }

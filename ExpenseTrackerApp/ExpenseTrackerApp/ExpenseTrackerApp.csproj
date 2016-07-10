@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddExpenseActivity.cs" />
-    <Compile Include="CheckableRelativeLayout.cs" />
+    <Compile Include="CheckableLinearLayout.cs" />
     <Compile Include="DataObjects\Account.cs" />
     <Compile Include="DataObjects\ExpenseItem.cs" />
     <Compile Include="DataObjects\UserProfile.cs" />
@@ -113,6 +113,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\ExpenseListItem.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\ExpenseListItemWithSectionHeader.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

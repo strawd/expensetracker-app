@@ -65,6 +65,12 @@ namespace ExpenseTrackerApp
             _getExpenseItemsTask = null;
         }
 
+        public Task DeleteExpenseItemAsync(ExpenseItem expenseItem)
+        {
+            var expenseItemTable = _client.GetTable<ExpenseItem>();
+            return expenseItemTable.DeleteAsync(expenseItem);
+        }
+
         private async Task<UserProfile> ExecuteGetOrCreateUserProfileAsync()
         {
             var userProfileTable = _client.GetTable<UserProfile>();
