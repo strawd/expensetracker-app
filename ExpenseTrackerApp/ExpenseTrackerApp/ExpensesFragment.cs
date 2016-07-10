@@ -20,6 +20,7 @@ namespace ExpenseTrackerApp
 
         PersistedDataFragment _persistedDataFragment;
         CancellationTokenSource _destroyCancellationSource;
+        ActionMode _actionMode;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -36,7 +37,10 @@ namespace ExpenseTrackerApp
             var view = inflater.Inflate(Resource.Layout.Expenses, container, false);
 
             var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpenseButton);
+            var listView = view.FindViewById<ListView>(Resource.Id.ExpensesListView);
+
             addButton.Click += OnAddButtonClick;
+            listView.ItemClick += OnListViewItemClick;
 
 #pragma warning disable CS4014 // Intentionally fire-and-forget
             InitializeExpenseItemsAsync(view);
@@ -45,9 +49,25 @@ namespace ExpenseTrackerApp
             return view;
         }
 
+        private void OnListViewItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            var listView = (ListView)e.Parent;
+
+            if (listView.CheckedItemCount > 0 && _actionMode == null)
+            {
+                _actionMode = Activity.StartActionMode(new ActionModeCallback(this));
+            }
+        }
+
         public override void OnDestroyView()
         {
             base.OnDestroyView();
+
+            if (_actionMode != null)
+            {
+                _actionMode.Finish();
+                _actionMode = null;
+            }
 
             _destroyCancellationSource?.Cancel();
         }
@@ -92,7 +112,7 @@ namespace ExpenseTrackerApp
             progressText.Visibility = ViewStates.Gone;
 
             var expenseItemStrings = expenseItems.Select(item => $"{item.Date.ToString("d")} ${item.Amount}: {item.Description}");
-            listView.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleListItem1, expenseItemStrings.ToArray());
+            listView.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleListItemSingleChoice, expenseItemStrings.ToArray());
 
             addButton.Visibility = ViewStates.Visible;
         }
@@ -154,6 +174,52 @@ namespace ExpenseTrackerApp
                 progressDialog.Hide();
 
                 await InitializeExpenseItemsAsync(View);
+            }
+        }
+
+        private class ActionModeCallback : Java.Lang.Object, ActionMode.ICallback
+        {
+            ExpensesFragment _expensesFragment;
+
+            public ActionModeCallback(ExpensesFragment expensesFragment)
+            {
+                _expensesFragment = expensesFragment;
+            }
+
+            public bool OnActionItemClicked(ActionMode mode, IMenuItem item)
+            {
+                if (item.ItemId == Resource.Id.EditExpenseMenuItem)
+                {
+                    // TODO
+                    return true;
+                }
+                if (item.ItemId == Resource.Id.DeleteExpenseMenuItem)
+                {
+                    // TODO
+                    return true;
+                }
+                return false;
+            }
+
+            public bool OnCreateActionMode(ActionMode mode, IMenu menu)
+            {
+                mode.MenuInflater.Inflate(Resource.Menu.ExpenseItemMenu, menu);
+                return true;
+            }
+
+            public void OnDestroyActionMode(ActionMode mode)
+            {
+                _expensesFragment._actionMode = null;
+
+                var listView = _expensesFragment.View.FindViewById<ListView>(Resource.Id.ExpensesListView);
+
+                if (listView.CheckedItemCount > 0)
+                    listView.SetItemChecked(listView.CheckedItemPosition, false);
+            }
+
+            public bool OnPrepareActionMode(ActionMode mode, IMenu menu)
+            {
+                return false;
             }
         }
     }

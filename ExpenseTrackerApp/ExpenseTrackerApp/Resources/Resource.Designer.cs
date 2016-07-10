@@ -78,6 +78,12 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f06000a
 			public const int AddExpenseMenuItem = 2131099658;
 			
+			// aapt resource value: 0x7f06000c
+			public const int DeleteExpenseMenuItem = 2131099660;
+			
+			// aapt resource value: 0x7f06000b
+			public const int EditExpenseMenuItem = 2131099659;
+			
 			// aapt resource value: 0x7f060005
 			public const int ExpensesListView = 2131099653;
 			
@@ -143,6 +149,9 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f050000
 			public const int AddExpenseMenu = 2131034112;
 			
+			// aapt resource value: 0x7f050001
+			public const int ExpenseItemMenu = 2131034113;
+			
 			static Menu()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -180,11 +189,17 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f04000d
 			public const int DateHint = 2130968589;
 			
+			// aapt resource value: 0x7f040012
+			public const int DeleteExpenseCommand = 2130968594;
+			
 			// aapt resource value: 0x7f04000c
 			public const int DescriptionHint = 2130968588;
 			
 			// aapt resource value: 0x7f04000f
 			public const int DescriptionValidationMessage = 2130968591;
+			
+			// aapt resource value: 0x7f040013
+			public const int EditExpenseCommand = 2130968595;
 			
 			// aapt resource value: 0x7f040006
 			public const int Expenses = 2130968582;

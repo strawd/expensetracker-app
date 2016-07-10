@@ -19,4 +19,6 @@
   <string name="DescriptionValidationMessage">Please enter a description between 1 and 200 characters.</string>
   <string name="AddingExpense">Adding expense...</string>
   <string name="Close">Close</string>
+  <string name="DeleteExpenseCommand">Delete</string>
+  <string name="EditExpenseCommand">Edit</string>
 </resources>
