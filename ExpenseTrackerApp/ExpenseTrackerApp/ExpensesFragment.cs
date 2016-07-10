@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
@@ -111,8 +110,7 @@ namespace ExpenseTrackerApp
             progressBar.Visibility = ViewStates.Gone;
             progressText.Visibility = ViewStates.Gone;
 
-            var expenseItemStrings = expenseItems.Select(item => $"{item.Date.ToString("d")} ${item.Amount}: {item.Description}");
-            listView.Adapter = new ArrayAdapter<string>(Context, Android.Resource.Layout.SimpleListItemSingleChoice, expenseItemStrings.ToArray());
+            listView.Adapter = new ExpensesAdapter(Activity, expenseItems);
 
             addButton.Visibility = ViewStates.Visible;
         }

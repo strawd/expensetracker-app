@@ -28,8 +28,8 @@
         p1:layout_height="60dp"
         p1:id="@+id/AddExpenseButton"
         p1:layout_gravity="right|bottom"
-        p1:layout_marginBottom="60dp"
-        p1:layout_marginRight="60dp"
+        p1:layout_marginBottom="30dp"
+        p1:layout_marginRight="30dp"
         p1:background="@drawable/addbutton"
         p1:visibility="gone" />
 </FrameLayout>
