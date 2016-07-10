@@ -16,6 +16,7 @@ namespace ExpenseTrackerApp
     public class ExpensesFragment : Fragment
     {
         const int AddExpenseRequestCode = 1;
+        const int EditExpenseRequestCode = 2;
 
         PersistedDataFragment _persistedDataFragment;
         CancellationTokenSource _destroyCancellationSource;
@@ -117,7 +118,7 @@ namespace ExpenseTrackerApp
 
         private void OnAddButtonClick(object sender, EventArgs e)
         {
-            var intent = new Intent(View.Context, typeof(AddExpenseActivity));
+            var intent = new Intent(View.Context, typeof(AddOrEditExpenseActivity));
             StartActivityForResult(intent, AddExpenseRequestCode);
         }
 
@@ -125,53 +126,132 @@ namespace ExpenseTrackerApp
         {
             base.OnActivityResult(requestCode, resultCode, data);
 
-            var localDestroyCancellationSource = _destroyCancellationSource;
-
             if (requestCode == AddExpenseRequestCode && resultCode == Result.Ok)
             {
-                int amountInCents = data.GetIntExtra(AddExpenseActivity.AmountInCentsKey, 0);
-                string description = data.GetStringExtra(AddExpenseActivity.DescriptionKey);
-                long dateInTicks = data.GetLongExtra(AddExpenseActivity.DateInTicksKey, 0);
+                await InsertExpenseItemAsync(data);
+            }
+            else if (requestCode == EditExpenseRequestCode && resultCode == Result.Ok)
+            {
+                await UpdateExpenseItemAsync(data);
+            }
+        }
 
-                var progressDialog = new ProgressDialog(Context);
-                progressDialog.Indeterminate = true;
-                progressDialog.SetTitle(Resource.String.AddingExpense);
-                progressDialog.Show();
+        private async Task InsertExpenseItemAsync(Intent data)
+        {
+            var localDestroyCancellationSource = _destroyCancellationSource;
 
-                var expenseItem = new ExpenseItem
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Amount = amountInCents / 100m,
-                    Description = description,
-                    Date = new DateTimeOffset(new DateTime(dateInTicks, DateTimeKind.Local))
-                };
+            int amountInCents = data.GetIntExtra(AddOrEditExpenseActivity.AmountInCentsKey, 0);
+            string description = data.GetStringExtra(AddOrEditExpenseActivity.DescriptionKey);
+            long dateInTicks = data.GetLongExtra(AddOrEditExpenseActivity.DateInTicksKey, 0);
 
-                try
-                {
-                    await _persistedDataFragment.InsertExpenseItemAsync(expenseItem);
-                }
-                catch (Exception ex)
-                {
-                    if (localDestroyCancellationSource.IsCancellationRequested)
-                        return;
+            var progressDialog = new ProgressDialog(Context);
+            progressDialog.Indeterminate = true;
+            progressDialog.SetTitle(Resource.String.AddingExpense);
+            progressDialog.Show();
 
-                    progressDialog.Hide();
+            var expenseItem = new ExpenseItem
+            {
+                Id = Guid.NewGuid().ToString(),
+                Amount = amountInCents / 100m,
+                Description = description,
+                Date = new DateTimeOffset(new DateTime(dateInTicks, DateTimeKind.Local))
+            };
 
-                    var alert = new AlertDialog.Builder(Context).Create();
-                    alert.SetMessage(ex.Message);
-
-                    alert.Show();
-                    return;
-                }
-
-                _persistedDataFragment.InvalidateExpenseItems();
-
+            try
+            {
+                await _persistedDataFragment.InsertExpenseItemAsync(expenseItem);
+            }
+            catch (Exception ex)
+            {
                 if (localDestroyCancellationSource.IsCancellationRequested)
                     return;
 
                 progressDialog.Hide();
 
-                await InitializeExpenseItemsAsync(View);
+                var alert = new AlertDialog.Builder(Context).Create();
+                alert.SetMessage(ex.Message);
+
+                alert.Show();
+                return;
+            }
+
+            _persistedDataFragment.InvalidateExpenseItems();
+
+            if (localDestroyCancellationSource.IsCancellationRequested)
+                return;
+
+            progressDialog.Hide();
+
+            await InitializeExpenseItemsAsync(View);
+        }
+
+        private async Task UpdateExpenseItemAsync(Intent data)
+        {
+            var localDestroyCancellationSource = _destroyCancellationSource;
+
+            string itemId = data.GetStringExtra(AddOrEditExpenseActivity.ItemIdKey);
+            int amountInCents = data.GetIntExtra(AddOrEditExpenseActivity.AmountInCentsKey, 0);
+            string description = data.GetStringExtra(AddOrEditExpenseActivity.DescriptionKey);
+            long dateInTicks = data.GetLongExtra(AddOrEditExpenseActivity.DateInTicksKey, 0);
+
+            var progressDialog = new ProgressDialog(Context);
+            progressDialog.Indeterminate = true;
+            progressDialog.SetTitle(Resource.String.UpdatingExpense);
+            progressDialog.Show();
+
+            var expenseItem = new ExpenseItem
+            {
+                Id = itemId,
+                Amount = amountInCents / 100m,
+                Description = description,
+                Date = new DateTimeOffset(new DateTime(dateInTicks, DateTimeKind.Local))
+            };
+
+            try
+            {
+                await _persistedDataFragment.UpdateExpenseItemAsync(expenseItem);
+            }
+            catch (Exception ex)
+            {
+                if (localDestroyCancellationSource.IsCancellationRequested)
+                    return;
+
+                progressDialog.Hide();
+
+                var alert = new AlertDialog.Builder(Context).Create();
+                alert.SetMessage(ex.Message);
+
+                alert.Show();
+                return;
+            }
+
+            _persistedDataFragment.InvalidateExpenseItems();
+
+            if (localDestroyCancellationSource.IsCancellationRequested)
+                return;
+
+            progressDialog.Hide();
+
+            await InitializeExpenseItemsAsync(View);
+        }
+
+        private void EditSelectedExpense()
+        {
+            var listView = View.FindViewById<ListView>(Resource.Id.ExpensesListView);
+            var adapter = listView.Adapter as ExpensesAdapter;
+
+            if (listView.CheckedItemCount > 0 && adapter != null)
+            {
+                ExpenseItem selectedExpense = adapter[listView.CheckedItemPosition];
+
+                var intent = new Intent(View.Context, typeof(AddOrEditExpenseActivity));
+
+                intent.PutExtra(AddOrEditExpenseActivity.ItemIdKey, selectedExpense.Id);
+                intent.PutExtra(AddOrEditExpenseActivity.AmountInCentsKey, (int)(selectedExpense.Amount * 100m));
+                intent.PutExtra(AddOrEditExpenseActivity.DescriptionKey, selectedExpense.Description);
+                intent.PutExtra(AddOrEditExpenseActivity.DateInTicksKey, selectedExpense.Date.LocalDateTime.Ticks);
+
+                StartActivityForResult(intent, EditExpenseRequestCode);
             }
         }
 
@@ -231,7 +311,8 @@ namespace ExpenseTrackerApp
             {
                 if (item.ItemId == Resource.Id.EditExpenseMenuItem)
                 {
-                    // TODO
+                    _expensesFragment.EditSelectedExpense();
+
                     return true;
                 }
                 if (item.ItemId == Resource.Id.DeleteExpenseMenuItem)

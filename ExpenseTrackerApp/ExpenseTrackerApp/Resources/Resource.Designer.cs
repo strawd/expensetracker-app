@@ -78,11 +78,14 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f06000d
 			public const int AddExpenseMenuItem = 2131099661;
 			
-			// aapt resource value: 0x7f06000f
-			public const int DeleteExpenseMenuItem = 2131099663;
+			// aapt resource value: 0x7f060010
+			public const int DeleteExpenseMenuItem = 2131099664;
 			
 			// aapt resource value: 0x7f06000e
-			public const int EditExpenseMenuItem = 2131099662;
+			public const int EditExpenseDoneMenuItem = 2131099662;
+			
+			// aapt resource value: 0x7f06000f
+			public const int EditExpenseMenuItem = 2131099663;
 			
 			// aapt resource value: 0x7f060004
 			public const int ExpenseItemAmountCheckedText = 2131099652;
@@ -125,7 +128,7 @@ namespace ExpenseTrackerApp
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int AddExpense = 2130903040;
+			public const int AddOrEditExpense = 2130903040;
 			
 			// aapt resource value: 0x7f030001
 			public const int ExpenseListItem = 2130903041;
@@ -165,7 +168,10 @@ namespace ExpenseTrackerApp
 			public const int AddExpenseMenu = 2131034112;
 			
 			// aapt resource value: 0x7f050001
-			public const int ExpenseItemMenu = 2131034113;
+			public const int EditExpenseMenu = 2131034113;
+			
+			// aapt resource value: 0x7f050002
+			public const int ExpenseItemMenu = 2131034114;
 			
 			static Menu()
 			{
@@ -207,11 +213,11 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f040012
 			public const int DeleteExpenseCommand = 2130968594;
 			
-			// aapt resource value: 0x7f040014
-			public const int DeleteExpenseConfirmation = 2130968596;
+			// aapt resource value: 0x7f040017
+			public const int DeleteExpenseConfirmation = 2130968599;
 			
-			// aapt resource value: 0x7f040015
-			public const int DeletingExpense = 2130968597;
+			// aapt resource value: 0x7f040018
+			public const int DeletingExpense = 2130968600;
 			
 			// aapt resource value: 0x7f04000c
 			public const int DescriptionHint = 2130968588;
@@ -220,7 +226,13 @@ namespace ExpenseTrackerApp
 			public const int DescriptionValidationMessage = 2130968591;
 			
 			// aapt resource value: 0x7f040013
-			public const int EditExpenseCommand = 2130968595;
+			public const int EditExpense = 2130968595;
+			
+			// aapt resource value: 0x7f040014
+			public const int EditExpenseCommand = 2130968596;
+			
+			// aapt resource value: 0x7f040015
+			public const int EditExpenseDoneCommand = 2130968597;
 			
 			// aapt resource value: 0x7f040006
 			public const int Expenses = 2130968582;
@@ -245,6 +257,9 @@ namespace ExpenseTrackerApp
 			
 			// aapt resource value: 0x7f040007
 			public const int Summary = 2130968583;
+			
+			// aapt resource value: 0x7f040016
+			public const int UpdatingExpense = 2130968598;
 			
 			static String()
 			{

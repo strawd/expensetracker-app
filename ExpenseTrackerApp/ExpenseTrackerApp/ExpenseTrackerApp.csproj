@@ -77,7 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddExpenseActivity.cs" />
+    <Compile Include="AddOrEditExpenseActivity.cs" />
     <Compile Include="CheckableLinearLayout.cs" />
     <Compile Include="DataObjects\Account.cs" />
     <Compile Include="DataObjects\ExpenseItem.cs" />
@@ -109,7 +109,7 @@
     <AndroidResource Include="Resources\layout\Schedule.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout\AddExpense.axml">
+    <AndroidResource Include="Resources\layout\AddOrEditExpense.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\ExpenseListItem.axml">
@@ -143,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\ExpenseItemMenu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\EditExpenseMenu.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

@@ -1,5 +1,6 @@
 // Copyright 2016 David Straw
 
+using System;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -9,33 +10,57 @@ using Android.Widget;
 namespace ExpenseTrackerApp
 {
     [Activity(Label = "@string/AddExpense")]
-    public class AddExpenseActivity : Activity
+    public class AddOrEditExpenseActivity : Activity
     {
-        public const string AmountInCentsKey = "AddExpenseAmountInCents";
-        public const string DescriptionKey = "AddExpenseDescription";
-        public const string DateInTicksKey = "AddExpenseDateInTicks";
+        public const string AmountInCentsKey = "AddOrEditExpenseAmountInCents";
+        public const string DescriptionKey = "AddOrEditExpenseDescription";
+        public const string DateInTicksKey = "AddOrEditExpenseDateInTicks";
+        public const string ItemIdKey = "AddOrEditExpenseItemId";
+
+        string _editItemId;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-            SetContentView(Resource.Layout.AddExpense);
+            SetContentView(Resource.Layout.AddOrEditExpense);
 
+            var amountText = FindViewById<EditText>(Resource.Id.AddExpenseAmountText);
             var descriptionText = FindViewById<EditText>(Resource.Id.AddExpenseDescriptionText);
+            var datePicker = FindViewById<DatePicker>(Resource.Id.AddExpenseDatePicker);
+
+            _editItemId = Intent.GetStringExtra(ItemIdKey);
+            if (!string.IsNullOrEmpty(_editItemId))
+            {
+                // This is an edit, because existing values were sent to the activity
+                Title = GetString(Resource.String.EditExpense);
+
+                int amountInCents = Intent.GetIntExtra(AmountInCentsKey, 0);
+                string description = Intent.GetStringExtra(DescriptionKey);
+                long dateInTicks = Intent.GetLongExtra(DateInTicksKey, 0L);
+
+                amountText.Text = (amountInCents / 100m).ToString("f2");
+                descriptionText.Text = description;
+                datePicker.DateTime = new DateTime(dateInTicks, System.DateTimeKind.Local);
+            }
+
             descriptionText.EditorAction += OnDescriptionTextEditorAction;
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            MenuInflater.Inflate(Resource.Menu.AddExpenseMenu, menu);
+            if (!string.IsNullOrEmpty(_editItemId))
+                MenuInflater.Inflate(Resource.Menu.EditExpenseMenu, menu);
+            else
+                MenuInflater.Inflate(Resource.Menu.AddExpenseMenu, menu);
             return true;
         }
 
         public override bool OnMenuItemSelected(int featureId, IMenuItem item)
         {
-            if (item.ItemId == Resource.Id.AddExpenseMenuItem)
+            if (item.ItemId == Resource.Id.AddExpenseMenuItem || item.ItemId == Resource.Id.EditExpenseDoneMenuItem)
             {
-                AddExpenseItem();
+                AddOrEditExpenseItem();
                 return true;
             }
 
@@ -46,11 +71,11 @@ namespace ExpenseTrackerApp
         {
             if (e.ActionId == Android.Views.InputMethods.ImeAction.Send)
             {
-                AddExpenseItem();
+                AddOrEditExpenseItem();
             }
         }
 
-        private void AddExpenseItem()
+        private void AddOrEditExpenseItem()
         {
             var amountText = FindViewById<EditText>(Resource.Id.AddExpenseAmountText);
             var descriptionText = FindViewById<EditText>(Resource.Id.AddExpenseDescriptionText);
@@ -74,6 +99,9 @@ namespace ExpenseTrackerApp
             resultIntent.PutExtra(AmountInCentsKey, (int)(amount * 100m));
             resultIntent.PutExtra(DescriptionKey, description);
             resultIntent.PutExtra(DateInTicksKey, datePicker.DateTime.Ticks);
+
+            if (!string.IsNullOrEmpty(_editItemId))
+                resultIntent.PutExtra(ItemIdKey, _editItemId);
 
             SetResult(Result.Ok, resultIntent);
 
