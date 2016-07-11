@@ -91,7 +91,7 @@ namespace ExpenseTrackerApp
             }
 
             var descriptionText = view.FindViewById<TextView>(Resource.Id.ExpenseItemDescriptionText);
-            var amountText = view.FindViewById<TextView>(Resource.Id.ExpenseItemAmountCheckedText);
+            var amountText = view.FindViewById<TextView>(Resource.Id.ExpenseItemAmountText);
 
             descriptionText.Text = _expenseItems[position].Description;
             amountText.Text = _expenseItems[position].Amount.ToString("c");

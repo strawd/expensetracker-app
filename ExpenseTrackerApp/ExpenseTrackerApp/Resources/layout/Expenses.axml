@@ -30,6 +30,6 @@
         p1:layout_gravity="right|bottom"
         p1:layout_marginBottom="30dp"
         p1:layout_marginRight="30dp"
-        p1:background="@drawable/addbutton"
+        p1:background="@drawable/AddExpenseItemButton"
         p1:visibility="gone" />
 </FrameLayout>

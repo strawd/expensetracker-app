@@ -77,11 +77,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddOrEditExpensePeriodActivity.cs" />
     <Compile Include="AddOrEditExpenseActivity.cs" />
     <Compile Include="CheckableLinearLayout.cs" />
     <Compile Include="DataObjects\Account.cs" />
     <Compile Include="DataObjects\ExpenseItem.cs" />
+    <Compile Include="DataObjects\ExpensePeriod.cs" />
     <Compile Include="DataObjects\UserProfile.cs" />
+    <Compile Include="ExpensePeriodsAdapter.cs" />
     <Compile Include="ExpensesAdapter.cs" />
     <Compile Include="ExpensesFragment.cs" />
     <Compile Include="MainActivity.cs" />
@@ -118,6 +121,12 @@
     <AndroidResource Include="Resources\layout\ExpenseListItemWithSectionHeader.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\ExpensePeriodListItem.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\AddOrEditExpensePeriod.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">
@@ -136,7 +145,7 @@
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\AddButton.xml" />
+    <AndroidResource Include="Resources\drawable\AddExpenseItemButton.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\AddExpenseMenu.xml" />
@@ -146,6 +155,18 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\EditExpenseMenu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\AddExpensePeriodButton.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\AddExpensePeriodMenu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\EditExpensePeriodMenu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\ExpensePeriodMenu.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

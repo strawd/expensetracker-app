@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2016 David Straw -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="oval">
+      <solid android:color="#0018A0" />
+    </shape>
+  </item>
+  <item android:top="27dp" android:bottom="27dp" android:left="10dp" android:right="10dp">
+    <shape android:shape="rectangle" android:gravity="center_vertical">
+      <corners android:radius="1dp"/>
+      <solid android:color="#FFFFFF"/>
+    </shape>
+  </item>
+  <item android:left="27dp" android:right="27dp" android:top="10dp" android:bottom="10dp">
+    <shape android:shape="rectangle" android:gravity="center_horizontal">
+      <corners android:radius="1dp"/>
+      <solid android:color="#FFFFFF"/>
+    </shape>
+  </item>
+</layer-list>
