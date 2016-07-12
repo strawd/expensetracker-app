@@ -134,6 +134,12 @@ namespace ExpenseTrackerApp
             {
                 await UpdateExpenseItemAsync(data);
             }
+
+            if (_actionMode != null)
+            {
+                _actionMode.Finish();
+                _actionMode = null;
+            }
         }
 
         private async Task InsertExpenseItemAsync(Intent data)

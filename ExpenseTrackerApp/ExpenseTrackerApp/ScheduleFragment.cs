@@ -134,6 +134,12 @@ namespace ExpenseTrackerApp
             {
                 await UpdateExpensePeriodAsync(data);
             }
+
+            if (_actionMode != null)
+            {
+                _actionMode.Finish();
+                _actionMode = null;
+            }
         }
 
         private async Task InsertExpensePeriodAsync(Intent data)
@@ -244,7 +250,7 @@ namespace ExpenseTrackerApp
 
                 intent.PutExtra(AddOrEditExpensePeriodActivity.ItemIdKey, selectedExpensePeriod.Id);
                 intent.PutExtra(AddOrEditExpensePeriodActivity.AmountAvailableInCentsKey, (int)(selectedExpensePeriod.AmountAvailable * 100m));
-                // TODO: other properties
+                intent.PutExtra(AddOrEditExpensePeriodActivity.StartDateInTicksKey, selectedExpensePeriod.StartDate.LocalDateTime.Ticks);
 
                 StartActivityForResult(intent, EditExpensePeriodRequestCode);
             }
@@ -260,7 +266,7 @@ namespace ExpenseTrackerApp
                 ExpensePeriod selectedExpensePeriod = adapter[listView.CheckedItemPosition];
 
                 var alert = new AlertDialog.Builder(Context).Create();
-                alert.SetMessage(string.Format(GetString(Resource.String.DeleteExpensePeriodConfirmation), selectedExpensePeriod.StartDate));
+                alert.SetMessage(string.Format(GetString(Resource.String.DeleteExpensePeriodConfirmation), selectedExpensePeriod.StartDate.ToString("D")));
                 alert.SetButton(
                     GetString(Resource.String.DeleteExpensePeriodCommand),
                     async (sender, e) => { await ExecuteDeleteExpensePeriodAsync(selectedExpensePeriod); });

@@ -17,8 +17,6 @@ namespace ExpenseTrackerApp.DataObjects
 
         public DateTimeOffset StartDate { get; set; }
 
-        public string CreatedBy { get; set; }
-
         public string AccountId { get; set; }
     }
 }
