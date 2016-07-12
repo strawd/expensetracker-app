@@ -8,6 +8,7 @@
   <string name="RetrievingExpenses">Retrieving expenses...</string>
   <string name="RetrievingUserProfile">Retrieving user profile...</string>
   <string name="RetrievingExpensePeriods">Retrieving expense periods...</string>
+  <string name="RetrievingSummary">Retrieving summary...</string>
   <string name="Expenses">Expenses</string>
   <string name="Summary">Summary</string>
   <string name="Schedule">Schedule</string>
@@ -39,4 +40,8 @@
   <string name="DeletingExpense">Deleting expense...</string>
   <string name="DeletingExpensePeriod">Deleting expense period...</string>
   <string name="DeleteExpensePeriodConfirmation">Delete expense period starting at {0}?</string>
+  <string name="CurrentExpensePeriod">Current expense period:</string>
+  <string name="CurrentExpensePeriodProgressSummary">{0} remaining of {1}</string>
+  <string name="CurrentExpensePeriodStartDate">Started on: {0}</string>
+  <string name="CurrentExpensePeriodExpenseCount">Number of expenses: {0}</string>
 </resources>

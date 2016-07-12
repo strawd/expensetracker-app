@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -18,6 +19,7 @@ namespace ExpenseTrackerApp
         Task<Account> _getAccountTask;
         Task<List<ExpenseItem>> _getExpenseItemsTask;
         Task<List<ExpensePeriod>> _getExpensePeriodsTask;
+        Task<CurrentExpensePeriodSummary> _getCurrentExpensePeriodSummaryTask;
 
         MobileServiceClient _client;
 
@@ -61,6 +63,12 @@ namespace ExpenseTrackerApp
                 (_getExpensePeriodsTask = ExecuteGetExpensePeriodsAsync());
         }
 
+        public Task<CurrentExpensePeriodSummary> GetCurrentExpensePeriodSummaryAsync()
+        {
+            return _getCurrentExpensePeriodSummaryTask ??
+                (_getCurrentExpensePeriodSummaryTask = ExecuteGetCurrentExpensePeriodSummaryAsync());
+        }
+
         public Task InsertExpenseItemAsync(ExpenseItem expenseItem)
         {
             var expenseItemTable = _client.GetTable<ExpenseItem>();
@@ -76,11 +84,18 @@ namespace ExpenseTrackerApp
         public void InvalidateExpenseItems()
         {
             _getExpenseItemsTask = null;
+            InvalidateSummary();
         }
 
         public void InvalidateExpensePeriods()
         {
             _getExpensePeriodsTask = null;
+            InvalidateSummary();
+        }
+
+        public void InvalidateSummary()
+        {
+            _getCurrentExpensePeriodSummaryTask = null;
         }
 
         public Task UpdateExpenseItemAsync(ExpenseItem expenseItem)
@@ -143,6 +158,11 @@ namespace ExpenseTrackerApp
                 .OrderByDescending(x => x.StartDate)
                 .Take(100)
                 .ToListAsync();
+        }
+
+        private Task<CurrentExpensePeriodSummary> ExecuteGetCurrentExpensePeriodSummaryAsync()
+        {
+            return _client.InvokeApiAsync<CurrentExpensePeriodSummary>("Summary/CurrentExpensePeriod", HttpMethod.Get, null);
         }
     }
 }
