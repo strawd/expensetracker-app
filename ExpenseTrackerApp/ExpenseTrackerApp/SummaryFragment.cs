@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -49,7 +50,8 @@ namespace ExpenseTrackerApp
             var localDestroyCancellationSource = _destroyCancellationSource;
 
             var expensePeriodSummaryLayout = view.FindViewById<LinearLayout>(Resource.Id.CurrentExpensePeriodSummaryLayout);
-            var expensePeriodProgressBar = view.FindViewById<ProgressBar>(Resource.Id.CurrentExpensePeriodProgressBar);
+            var amountRemainingView = view.FindViewById<View>(Resource.Id.SummaryAmountRemainingView);
+            var amountSpentView = view.FindViewById<View>(Resource.Id.SummaryAmountSpentView);
             var expensePeriodProgressText = view.FindViewById<TextView>(Resource.Id.CurrentExpensePeriodProgressText);
             var expensePeriodStartDateText = view.FindViewById<TextView>(Resource.Id.CurrentExpensePeriodStartDateText);
             var expensePeriodExpenseCountText = view.FindViewById<TextView>(Resource.Id.CurrentExpensePeriodExpenseCountText);
@@ -89,8 +91,31 @@ namespace ExpenseTrackerApp
             progressText.Visibility = ViewStates.Gone;
             expensePeriodSummaryLayout.Visibility = ViewStates.Visible;
 
-            expensePeriodProgressBar.Max = (int)(currentExpensePeriodSummary.AmountAvailable * 100m);
-            expensePeriodProgressBar.Progress = (int)(currentExpensePeriodSummary.AmountRemaining * 100m);
+            float amountRemaining = (float)currentExpensePeriodSummary.AmountRemaining;
+            float amountSpent = (float)(currentExpensePeriodSummary.AmountAvailable - currentExpensePeriodSummary.AmountRemaining);
+
+            ((LinearLayout.LayoutParams)amountRemainingView.LayoutParameters).Weight = amountRemaining;
+            ((LinearLayout.LayoutParams)amountSpentView.LayoutParameters).Weight = amountSpent;
+
+            Color amountRemainingColor = Color.ParseColor("#00FF00");
+            Color amountSpentColor = Color.ParseColor("#55AA55");
+            if (amountSpent > 0f)
+            {
+                if (amountRemaining / amountSpent < (1f/9f))
+                {
+                    amountRemainingColor = Color.ParseColor("#FF3200");
+                    amountSpentColor = Color.ParseColor("#A03A23");
+                }
+                else if (amountRemaining / amountSpent < (1f/3f))
+                {
+                    amountRemainingColor = Color.ParseColor("#EDF900");
+                    amountSpentColor = Color.ParseColor("#BAC132");
+                }
+            }
+
+            amountRemainingView.SetBackgroundColor(amountRemainingColor);
+            amountSpentView.SetBackgroundColor(amountSpentColor);
+
             expensePeriodProgressText.Text = string.Format(
                 GetString(Resource.String.CurrentExpensePeriodProgressSummary),
                 currentExpensePeriodSummary.AmountRemaining.ToString("c"),

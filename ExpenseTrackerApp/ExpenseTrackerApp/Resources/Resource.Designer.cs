@@ -78,8 +78,8 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f060001
 			public const int AddExpenseDescriptionText = 2131099649;
 			
-			// aapt resource value: 0x7f06001c
-			public const int AddExpenseMenuItem = 2131099676;
+			// aapt resource value: 0x7f06001d
+			public const int AddExpenseMenuItem = 2131099677;
 			
 			// aapt resource value: 0x7f060003
 			public const int AddExpensePeriodAmountAvailableText = 2131099651;
@@ -87,44 +87,41 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f060014
 			public const int AddExpensePeriodButton = 2131099668;
 			
-			// aapt resource value: 0x7f06001d
-			public const int AddExpensePeriodMenuItem = 2131099677;
+			// aapt resource value: 0x7f06001e
+			public const int AddExpensePeriodMenuItem = 2131099678;
 			
 			// aapt resource value: 0x7f060004
 			public const int AddExpensePeriodStartDatePicker = 2131099652;
 			
-			// aapt resource value: 0x7f06001b
-			public const int CurrentExpensePeriodExpenseCountText = 2131099675;
-			
-			// aapt resource value: 0x7f060018
-			public const int CurrentExpensePeriodProgressBar = 2131099672;
-			
-			// aapt resource value: 0x7f060019
-			public const int CurrentExpensePeriodProgressText = 2131099673;
+			// aapt resource value: 0x7f06001c
+			public const int CurrentExpensePeriodExpenseCountText = 2131099676;
 			
 			// aapt resource value: 0x7f06001a
-			public const int CurrentExpensePeriodStartDateText = 2131099674;
+			public const int CurrentExpensePeriodProgressText = 2131099674;
+			
+			// aapt resource value: 0x7f06001b
+			public const int CurrentExpensePeriodStartDateText = 2131099675;
 			
 			// aapt resource value: 0x7f060017
 			public const int CurrentExpensePeriodSummaryLayout = 2131099671;
 			
-			// aapt resource value: 0x7f060021
-			public const int DeleteExpenseMenuItem = 2131099681;
+			// aapt resource value: 0x7f060022
+			public const int DeleteExpenseMenuItem = 2131099682;
 			
-			// aapt resource value: 0x7f060023
-			public const int DeleteExpensePeriodMenuItem = 2131099683;
-			
-			// aapt resource value: 0x7f06001e
-			public const int EditExpenseDoneMenuItem = 2131099678;
-			
-			// aapt resource value: 0x7f060020
-			public const int EditExpenseMenuItem = 2131099680;
+			// aapt resource value: 0x7f060024
+			public const int DeleteExpensePeriodMenuItem = 2131099684;
 			
 			// aapt resource value: 0x7f06001f
-			public const int EditExpensePeriodDoneMenuItem = 2131099679;
+			public const int EditExpenseDoneMenuItem = 2131099679;
 			
-			// aapt resource value: 0x7f060022
-			public const int EditExpensePeriodMenuItem = 2131099682;
+			// aapt resource value: 0x7f060021
+			public const int EditExpenseMenuItem = 2131099681;
+			
+			// aapt resource value: 0x7f060020
+			public const int EditExpensePeriodDoneMenuItem = 2131099680;
+			
+			// aapt resource value: 0x7f060023
+			public const int EditExpensePeriodMenuItem = 2131099683;
 			
 			// aapt resource value: 0x7f060006
 			public const int ExpenseItemAmountText = 2131099654;
@@ -167,6 +164,12 @@ namespace ExpenseTrackerApp
 			
 			// aapt resource value: 0x7f060012
 			public const int ScheduleProgressText = 2131099666;
+			
+			// aapt resource value: 0x7f060018
+			public const int SummaryAmountRemainingView = 2131099672;
+			
+			// aapt resource value: 0x7f060019
+			public const int SummaryAmountSpentView = 2131099673;
 			
 			// aapt resource value: 0x7f060015
 			public const int SummaryProgressBar = 2131099669;

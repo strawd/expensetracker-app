@@ -32,13 +32,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp" />
-            <ProgressBar
-                style="?android:attr/progressBarStyleHorizontal"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:id="@+id/CurrentExpensePeriodProgressBar"
-                android:layout_height="40dp"
-                android:scaleY="7"
-                android:layout_marginBottom="5dp" />
+                android:layout_height="35dp">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/SummaryAmountRemainingView"
+                    android:layout_weight="8"
+                    android:background="#00FF00" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/SummaryAmountSpentView"
+                    android:layout_weight="2"
+                    android:background="#55AA55" />
+            </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
