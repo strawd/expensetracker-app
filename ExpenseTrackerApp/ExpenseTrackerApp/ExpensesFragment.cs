@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using ExpenseTrackerApp.DataObjects;
@@ -21,6 +22,7 @@ namespace ExpenseTrackerApp
         PersistedDataFragment _persistedDataFragment;
         CancellationTokenSource _destroyCancellationSource;
         ActionMode _actionMode;
+        bool _refreshing = false;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -38,9 +40,11 @@ namespace ExpenseTrackerApp
 
             var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpenseButton);
             var listView = view.FindViewById<ListView>(Resource.Id.ExpensesListView);
+            var refreshLayout = view.FindViewById<SwipeRefreshLayout>(Resource.Id.ExpensesRefreshLayout);
 
             addButton.Click += OnAddButtonClick;
             listView.ItemClick += OnListViewItemClick;
+            refreshLayout.Refresh += OnRefreshLayoutRefresh;
 
 #pragma warning disable CS4014 // Intentionally fire-and-forget
             InitializeExpenseItemsAsync(view);
@@ -70,16 +74,19 @@ namespace ExpenseTrackerApp
             }
 
             _destroyCancellationSource?.Cancel();
+            _refreshing = false;
         }
 
         private async Task InitializeExpenseItemsAsync(View view)
         {
             var localDestroyCancellationSource = _destroyCancellationSource;
+            _refreshing = true;
 
             var listView = view.FindViewById<ListView>(Resource.Id.ExpensesListView);
             var progressBar = view.FindViewById<ProgressBar>(Resource.Id.ExpensesProgressBar);
             var progressText = view.FindViewById<TextView>(Resource.Id.ExpensesProgressText);
             var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpenseButton);
+            var refreshLayout = view.FindViewById<SwipeRefreshLayout>(Resource.Id.ExpensesRefreshLayout);
 
             progressBar.Visibility = ViewStates.Visible;
             progressText.Visibility = ViewStates.Visible;
@@ -116,12 +123,32 @@ namespace ExpenseTrackerApp
             listView.Adapter = new ExpensesAdapter(Activity, expenseItems);
 
             addButton.Visibility = ViewStates.Visible;
+
+            refreshLayout.Refreshing = false;
+            _refreshing = false;
         }
 
         private void OnAddButtonClick(object sender, EventArgs e)
         {
             var intent = new Intent(View.Context, typeof(AddOrEditExpenseActivity));
             StartActivityForResult(intent, AddExpenseRequestCode);
+        }
+
+        private void OnRefreshLayoutRefresh(object sender, EventArgs e)
+        {
+            var refreshLayout = View.FindViewById<SwipeRefreshLayout>(Resource.Id.ExpensesRefreshLayout);
+
+            if (_refreshing)
+            {
+                refreshLayout.Refreshing = false;
+                return;
+            }
+
+            _persistedDataFragment.InvalidateExpenseItems();
+
+#pragma warning disable CS4014 // Intentionally fire-and-forget
+            InitializeExpenseItemsAsync(View);
+#pragma warning restore CS4014
         }
 
         public override async void OnActivityResult(int requestCode, Result resultCode, Intent data)

@@ -18,52 +18,57 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
-    <ScrollView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/SummaryRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:id="@+id/CurrentExpensePeriodSummaryLayout">
-            <TextView
-                android:text="@string/CurrentExpensePeriod"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp" />
+            android:layout_height="match_parent">
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="35dp">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/SummaryAmountRemainingView"
-                    android:layout_weight="8"
-                    android:background="#00FF00" />
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/SummaryAmountSpentView"
-                    android:layout_weight="2"
-                    android:background="#55AA55" />
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:id="@+id/CurrentExpensePeriodSummaryLayout">
+                <TextView
+                    android:text="@string/CurrentExpensePeriod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp">
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/SummaryAmountRemainingView"
+                        android:layout_weight="8"
+                        android:background="#00FF00" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/SummaryAmountSpentView"
+                        android:layout_weight="2"
+                        android:background="#55AA55" />
+                </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/CurrentExpensePeriodProgressText"
+                    android:gravity="right"
+                    android:layout_marginBottom="20dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/CurrentExpensePeriodStartDateText"
+                    android:layout_marginBottom="10dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/CurrentExpensePeriodExpenseCountText" />
             </LinearLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/CurrentExpensePeriodProgressText"
-                android:gravity="right"
-                android:layout_marginBottom="20dp" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/CurrentExpensePeriodStartDateText"
-                android:layout_marginBottom="10dp" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/CurrentExpensePeriodExpenseCountText" />
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

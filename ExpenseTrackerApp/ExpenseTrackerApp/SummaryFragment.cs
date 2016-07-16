@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Graphics;
 using Android.OS;
+using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using ExpenseTrackerApp.DataObjects;
@@ -16,6 +17,7 @@ namespace ExpenseTrackerApp
     {
         PersistedDataFragment _persistedDataFragment;
         CancellationTokenSource _destroyCancellationSource;
+        bool _refreshing = false;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -30,6 +32,9 @@ namespace ExpenseTrackerApp
             _destroyCancellationSource = new CancellationTokenSource();
 
             var view = inflater.Inflate(Resource.Layout.Summary, container, false);
+            var refreshLayout = view.FindViewById<SwipeRefreshLayout>(Resource.Id.SummaryRefreshLayout);
+
+            refreshLayout.Refresh += OnRefreshLayoutRefresh;
 
 #pragma warning disable CS4014 // Intentionally fire-and-forget
             InitializeSummaryAsync(view);
@@ -43,6 +48,7 @@ namespace ExpenseTrackerApp
             base.OnDestroyView();
 
             _destroyCancellationSource?.Cancel();
+            _refreshing = false;
         }
 
         private async Task InitializeSummaryAsync(View view)
@@ -57,6 +63,7 @@ namespace ExpenseTrackerApp
             var expensePeriodExpenseCountText = view.FindViewById<TextView>(Resource.Id.CurrentExpensePeriodExpenseCountText);
             var progressBar = view.FindViewById<ProgressBar>(Resource.Id.SummaryProgressBar);
             var progressText = view.FindViewById<TextView>(Resource.Id.SummaryProgressText);
+            var refreshLayout = view.FindViewById<SwipeRefreshLayout>(Resource.Id.SummaryRefreshLayout);
 
             expensePeriodSummaryLayout.Visibility = ViewStates.Gone;
             progressBar.Visibility = ViewStates.Visible;
@@ -126,6 +133,26 @@ namespace ExpenseTrackerApp
             expensePeriodExpenseCountText.Text = string.Format(
                 GetString(Resource.String.CurrentExpensePeriodExpenseCount),
                 currentExpensePeriodSummary.ExpensesCount);
+
+            refreshLayout.Refreshing = false;
+            _refreshing = false;
+        }
+
+        private void OnRefreshLayoutRefresh(object sender, EventArgs e)
+        {
+            var refreshLayout = View.FindViewById<SwipeRefreshLayout>(Resource.Id.SummaryRefreshLayout);
+
+            if (_refreshing)
+            {
+                refreshLayout.Refreshing = false;
+                return;
+            }
+
+            _persistedDataFragment.InvalidateSummary();
+
+#pragma warning disable CS4014 // Intentionally fire-and-forget
+            InitializeSummaryAsync(View);
+#pragma warning restore CS4014
         }
     }
 }

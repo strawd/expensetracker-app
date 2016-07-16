@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using ExpenseTrackerApp.DataObjects;
@@ -21,6 +22,7 @@ namespace ExpenseTrackerApp
         PersistedDataFragment _persistedDataFragment;
         CancellationTokenSource _destroyCancellationSource;
         ActionMode _actionMode;
+        bool _refreshing = false;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -38,9 +40,11 @@ namespace ExpenseTrackerApp
 
             var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpensePeriodButton);
             var listView = view.FindViewById<ListView>(Resource.Id.ExpensePeriodsListView);
+            var refreshLayout = view.FindViewById<SwipeRefreshLayout>(Resource.Id.ScheduleRefreshLayout);
 
             addButton.Click += OnAddButtonClick;
             listView.ItemClick += OnListViewItemClick;
+            refreshLayout.Refresh += OnRefreshLayoutRefresh;
 
 #pragma warning disable CS4014 // Intentionally fire-and-forget
             InitializeExpensePeriodsAsync(view);
@@ -70,6 +74,7 @@ namespace ExpenseTrackerApp
             }
 
             _destroyCancellationSource?.Cancel();
+            _refreshing = false;
         }
 
         private async Task InitializeExpensePeriodsAsync(View view)
@@ -80,6 +85,7 @@ namespace ExpenseTrackerApp
             var progressBar = view.FindViewById<ProgressBar>(Resource.Id.ScheduleProgressBar);
             var progressText = view.FindViewById<TextView>(Resource.Id.ScheduleProgressText);
             var addButton = view.FindViewById<ImageButton>(Resource.Id.AddExpensePeriodButton);
+            var refreshLayout = view.FindViewById<SwipeRefreshLayout>(Resource.Id.ScheduleRefreshLayout);
 
             progressBar.Visibility = ViewStates.Visible;
             progressText.Visibility = ViewStates.Visible;
@@ -116,12 +122,32 @@ namespace ExpenseTrackerApp
             listView.Adapter = new ExpensePeriodsAdapter(Activity, expensePeriods);
 
             addButton.Visibility = ViewStates.Visible;
+
+            refreshLayout.Refreshing = false;
+            _refreshing = false;
         }
 
         private void OnAddButtonClick(object sender, EventArgs e)
         {
             var intent = new Intent(View.Context, typeof(AddOrEditExpensePeriodActivity));
             StartActivityForResult(intent, AddExpensePeriodRequestCode);
+        }
+
+        private void OnRefreshLayoutRefresh(object sender, EventArgs e)
+        {
+            var refreshLayout = View.FindViewById<SwipeRefreshLayout>(Resource.Id.ScheduleRefreshLayout);
+
+            if (_refreshing)
+            {
+                refreshLayout.Refreshing = false;
+                return;
+            }
+
+            _persistedDataFragment.InvalidateExpensePeriods();
+
+#pragma warning disable CS4014 // Intentionally fire-and-forget
+            InitializeExpensePeriodsAsync(View);
+#pragma warning restore CS4014
         }
 
         public override async void OnActivityResult(int requestCode, Result resultCode, Intent data)

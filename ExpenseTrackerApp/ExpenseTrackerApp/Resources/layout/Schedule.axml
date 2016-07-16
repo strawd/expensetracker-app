@@ -18,11 +18,16 @@
             p1:layout_height="wrap_content"
             p1:layout_gravity="center_horizontal" />
     </LinearLayout>
-    <ListView
+    <android.support.v4.widget.SwipeRefreshLayout
+        p1:id="@+id/ScheduleRefreshLayout"
         p1:layout_width="match_parent"
-        p1:layout_height="match_parent"
-        p1:id="@+id/ExpensePeriodsListView"
-        p1:choiceMode="singleChoice" />
+        p1:layout_height="match_parent">
+        <ListView
+            p1:layout_width="match_parent"
+            p1:layout_height="match_parent"
+            p1:id="@+id/ExpensePeriodsListView"
+            p1:choiceMode="singleChoice" />
+    </android.support.v4.widget.SwipeRefreshLayout>
     <ImageButton
         p1:layout_width="60dp"
         p1:layout_height="60dp"
