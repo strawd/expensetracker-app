@@ -66,10 +66,12 @@ namespace ExpenseTrackerApp
 
             try
             {
-                currentExpensePeriodSummary = await _persistedDataFragment.GetCurrentExpensePeriodSummaryAsync();
+                currentExpensePeriodSummary = await _persistedDataFragment.GetCurrentExpensePeriodSummaryAsync(Context, localDestroyCancellationSource.Token);
             }
             catch (Exception ex)
             {
+                _persistedDataFragment.InvalidateSummary();
+
                 if (localDestroyCancellationSource.IsCancellationRequested)
                     return;
 

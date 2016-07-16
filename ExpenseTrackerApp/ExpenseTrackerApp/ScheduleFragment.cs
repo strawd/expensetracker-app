@@ -91,10 +91,12 @@ namespace ExpenseTrackerApp
 
             try
             {
-                expensePeriods = await _persistedDataFragment.GetExpensePeriodsAsync();
+                expensePeriods = await _persistedDataFragment.GetExpensePeriodsAsync(Context, localDestroyCancellationSource.Token);
             }
             catch (Exception ex)
             {
+                _persistedDataFragment.InvalidateExpensePeriods();
+
                 if (localDestroyCancellationSource.IsCancellationRequested)
                     return;
 
@@ -163,7 +165,7 @@ namespace ExpenseTrackerApp
 
             try
             {
-                await _persistedDataFragment.InsertExpensePeriodAsync(expensePeriod);
+                await _persistedDataFragment.InsertExpensePeriodAsync(Context, expensePeriod, localDestroyCancellationSource.Token);
             }
             catch (Exception ex)
             {
@@ -211,7 +213,7 @@ namespace ExpenseTrackerApp
 
             try
             {
-                await _persistedDataFragment.UpdateExpensePeriodAsync(expensePeriod);
+                await _persistedDataFragment.UpdateExpensePeriodAsync(Context, expensePeriod, localDestroyCancellationSource.Token);
             }
             catch (Exception ex)
             {
@@ -287,7 +289,7 @@ namespace ExpenseTrackerApp
             progressDialog.SetTitle(Resource.String.DeletingExpensePeriod);
             progressDialog.Show();
 
-            await _persistedDataFragment.DeleteExpensePeriodAsync(expensePeriod);
+            await _persistedDataFragment.DeleteExpensePeriodAsync(Context, expensePeriod, localDestroyCancellationSource.Token);
 
             _persistedDataFragment.InvalidateExpensePeriods();
 

@@ -52,21 +52,16 @@ namespace ExpenseTrackerApp
 
             try
             {
-                await _persistedDataFragment.AuthenticateAsync(this);
-
-                if (localDestroyCancellationSource.IsCancellationRequested)
-                    return;
-
                 progressText.Text = GetString(Resource.String.RetrievingUserProfile);
 
-                await _persistedDataFragment.GetOrCreateUserProfileAsync();
+                await _persistedDataFragment.GetOrCreateUserProfileAsync(this, localDestroyCancellationSource.Token);
 
                 if (localDestroyCancellationSource.IsCancellationRequested)
                     return;
 
                 progressText.Text = GetString(Resource.String.RetrievingAccountInformation);
 
-                account = await _persistedDataFragment.GetAccountAsync();
+                account = await _persistedDataFragment.GetAccountAsync(this, localDestroyCancellationSource.Token);
             }
             catch (Exception ex)
             {
