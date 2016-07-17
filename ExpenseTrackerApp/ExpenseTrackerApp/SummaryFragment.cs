@@ -13,7 +13,7 @@ using ExpenseTrackerApp.DataObjects;
 
 namespace ExpenseTrackerApp
 {
-    public class SummaryFragment : Fragment
+    public class SummaryFragment : Android.Support.V4.App.Fragment
     {
         PersistedDataFragment _persistedDataFragment;
         CancellationTokenSource _destroyCancellationSource;
@@ -23,7 +23,7 @@ namespace ExpenseTrackerApp
         {
             base.OnCreate(savedInstanceState);
 
-            _persistedDataFragment = FragmentManager.FindFragmentByTag<PersistedDataFragment>(MainActivity.PersistedDataFragmentTag);
+            _persistedDataFragment = (PersistedDataFragment)FragmentManager.FindFragmentByTag(MainActivity.PersistedDataFragmentTag);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

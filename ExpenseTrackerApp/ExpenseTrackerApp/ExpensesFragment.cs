@@ -14,7 +14,7 @@ using ExpenseTrackerApp.DataObjects;
 
 namespace ExpenseTrackerApp
 {
-    public class ExpensesFragment : Fragment
+    public class ExpensesFragment : Android.Support.V4.App.Fragment
     {
         const int AddExpenseRequestCode = 1;
         const int EditExpenseRequestCode = 2;
@@ -28,7 +28,7 @@ namespace ExpenseTrackerApp
         {
             base.OnCreate(savedInstanceState);
 
-            _persistedDataFragment = FragmentManager.FindFragmentByTag<PersistedDataFragment>(MainActivity.PersistedDataFragmentTag);
+            _persistedDataFragment = (PersistedDataFragment)FragmentManager.FindFragmentByTag(MainActivity.PersistedDataFragmentTag);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,6 +53,15 @@ namespace ExpenseTrackerApp
             return view;
         }
 
+        public void FinishActionMode()
+        {
+            if (_actionMode != null)
+            {
+                _actionMode.Finish();
+                _actionMode = null;
+            }
+        }
+
         private void OnListViewItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             var listView = (ListView)e.Parent;
@@ -67,11 +76,7 @@ namespace ExpenseTrackerApp
         {
             base.OnDestroyView();
 
-            if (_actionMode != null)
-            {
-                _actionMode.Finish();
-                _actionMode = null;
-            }
+            FinishActionMode();
 
             _destroyCancellationSource?.Cancel();
             _refreshing = false;
@@ -151,24 +156,20 @@ namespace ExpenseTrackerApp
 #pragma warning restore CS4014
         }
 
-        public override async void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        public override async void OnActivityResult(int requestCode, int resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
 
-            if (requestCode == AddExpenseRequestCode && resultCode == Result.Ok)
+            if (requestCode == AddExpenseRequestCode && resultCode == (int)Result.Ok)
             {
                 await InsertExpenseItemAsync(data);
             }
-            else if (requestCode == EditExpenseRequestCode && resultCode == Result.Ok)
+            else if (requestCode == EditExpenseRequestCode && resultCode == (int)Result.Ok)
             {
                 await UpdateExpenseItemAsync(data);
             }
 
-            if (_actionMode != null)
-            {
-                _actionMode.Finish();
-                _actionMode = null;
-            }
+            FinishActionMode();
         }
 
         private async Task InsertExpenseItemAsync(Intent data)

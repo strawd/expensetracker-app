@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Android.App;
 using Android.Content;
 using Android.OS;
 using ExpenseTrackerApp.DataObjects;
@@ -15,7 +14,7 @@ using Microsoft.WindowsAzure.MobileServices;
 
 namespace ExpenseTrackerApp
 {
-    class PersistedDataFragment : Fragment
+    class PersistedDataFragment : Android.Support.V4.App.Fragment
     {
         Task<UserProfile> _getOrCreateUserProfileTask;
         Task<Account> _getAccountTask;

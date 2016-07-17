@@ -14,7 +14,7 @@ using ExpenseTrackerApp.DataObjects;
 
 namespace ExpenseTrackerApp
 {
-    public class ScheduleFragment : Fragment
+    public class ScheduleFragment : Android.Support.V4.App.Fragment
     {
         const int AddExpensePeriodRequestCode = 1;
         const int EditExpensePeriodRequestCode = 2;
@@ -28,7 +28,7 @@ namespace ExpenseTrackerApp
         {
             base.OnCreate(savedInstanceState);
 
-            _persistedDataFragment = FragmentManager.FindFragmentByTag<PersistedDataFragment>(MainActivity.PersistedDataFragmentTag);
+            _persistedDataFragment = (PersistedDataFragment)FragmentManager.FindFragmentByTag(MainActivity.PersistedDataFragmentTag);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,6 +53,15 @@ namespace ExpenseTrackerApp
             return view;
         }
 
+        public void FinishActionMode()
+        {
+            if (_actionMode != null)
+            {
+                _actionMode.Finish();
+                _actionMode = null;
+            }
+        }
+
         private void OnListViewItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             var listView = (ListView)e.Parent;
@@ -67,11 +76,7 @@ namespace ExpenseTrackerApp
         {
             base.OnDestroyView();
 
-            if (_actionMode != null)
-            {
-                _actionMode.Finish();
-                _actionMode = null;
-            }
+            FinishActionMode();
 
             _destroyCancellationSource?.Cancel();
             _refreshing = false;
@@ -150,24 +155,20 @@ namespace ExpenseTrackerApp
 #pragma warning restore CS4014
         }
 
-        public override async void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        public override async void OnActivityResult(int requestCode, int resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
 
-            if (requestCode == AddExpensePeriodRequestCode && resultCode == Result.Ok)
+            if (requestCode == AddExpensePeriodRequestCode && resultCode == (int)Result.Ok)
             {
                 await InsertExpensePeriodAsync(data);
             }
-            else if (requestCode == EditExpensePeriodRequestCode && resultCode == Result.Ok)
+            else if (requestCode == EditExpensePeriodRequestCode && resultCode == (int)Result.Ok)
             {
                 await UpdateExpensePeriodAsync(data);
             }
 
-            if (_actionMode != null)
-            {
-                _actionMode.Finish();
-                _actionMode = null;
-            }
+            FinishActionMode();
         }
 
         private async Task InsertExpensePeriodAsync(Intent data)

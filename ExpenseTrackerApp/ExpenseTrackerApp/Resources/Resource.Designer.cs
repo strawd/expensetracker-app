@@ -1549,14 +1549,14 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f0b005c
 			public const int ExpensesRefreshLayout = 2131427420;
 			
-			// aapt resource value: 0x7f0b0061
-			public const int FragmentContainer = 2131427425;
-			
 			// aapt resource value: 0x7f0b005f
 			public const int MainProgressBar = 2131427423;
 			
 			// aapt resource value: 0x7f0b0060
 			public const int MainProgressText = 2131427424;
+			
+			// aapt resource value: 0x7f0b0061
+			public const int MainViewPager = 2131427425;
 			
 			// aapt resource value: 0x7f0b006f
 			public const int ScheduleProgressBar = 2131427439;

@@ -5,6 +5,7 @@ using System.Threading;
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Support.V4.View;
 using Android.Views;
 using Android.Widget;
 using ExpenseTrackerApp.DataObjects;
@@ -12,7 +13,7 @@ using ExpenseTrackerApp.DataObjects;
 namespace ExpenseTrackerApp
 {
     [Activity(Label = "@string/ApplicationName", MainLauncher = true, Icon = "@drawable/icon")]
-    public class MainActivity : Activity
+    public class MainActivity : Android.Support.V4.App.FragmentActivity
     {
         public const string PersistedDataFragmentTag = "PersistedDataFragment";
 
@@ -30,13 +31,13 @@ namespace ExpenseTrackerApp
 
             base.OnCreate(savedInstanceState);
 
-            _persistedDataFragment = FragmentManager.FindFragmentByTag<PersistedDataFragment>(PersistedDataFragmentTag);
+            _persistedDataFragment = (PersistedDataFragment)SupportFragmentManager.FindFragmentByTag(PersistedDataFragmentTag);
 
             if (_persistedDataFragment == null)
             {
                 _persistedDataFragment = new PersistedDataFragment();
 
-                FragmentManager
+                SupportFragmentManager
                     .BeginTransaction()
                     .Add(_persistedDataFragment, PersistedDataFragmentTag)
                     .Commit();
@@ -97,6 +98,7 @@ namespace ExpenseTrackerApp
 
             Title = account.Name;
 
+            InitializeViewPager();
             InitializeTabs(savedInstanceState);
         }
 
@@ -112,6 +114,15 @@ namespace ExpenseTrackerApp
             outState.PutInt(SelectedTabIndexKey, ActionBar.SelectedNavigationIndex);
 
             base.OnSaveInstanceState(outState);
+        }
+
+        private void InitializeViewPager()
+        {
+            var viewPager = FindViewById<ViewPager>(Resource.Id.MainViewPager);
+
+            viewPager.Adapter = new MainPagerAdapter(SupportFragmentManager);
+
+            viewPager.PageSelected += OnViewPagerPageSelected;
         }
 
         private void InitializeTabs(Bundle savedInstanceState)
@@ -139,19 +150,35 @@ namespace ExpenseTrackerApp
             ActionBar.SelectTab(ActionBar.GetTabAt(selectedTabIndex));
         }
 
+        private void OnViewPagerPageSelected(object sender, ViewPager.PageSelectedEventArgs e)
+        {
+            var viewPager = FindViewById<ViewPager>(Resource.Id.MainViewPager);
+            var adapter = (MainPagerAdapter)viewPager.Adapter;
+
+            adapter.FinishActionMode();
+
+            ActionBar.SetSelectedNavigationItem(e.Position);
+        }
+
         private void OnSummaryTabSelected(object sender, ActionBar.TabEventArgs e)
         {
-            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new SummaryFragment());
+            var viewPager = FindViewById<ViewPager>(Resource.Id.MainViewPager);
+
+            viewPager.CurrentItem = 0;
         }
 
         private void OnExpensesTabSelected(object sender, ActionBar.TabEventArgs e)
         {
-            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new ExpensesFragment());
+            var viewPager = FindViewById<ViewPager>(Resource.Id.MainViewPager);
+
+            viewPager.CurrentItem = 1;
         }
 
         private void OnScheduleTabSelected(object sender, ActionBar.TabEventArgs e)
         {
-            e.FragmentTransaction.Replace(Resource.Id.FragmentContainer, new ScheduleFragment());
+            var viewPager = FindViewById<ViewPager>(Resource.Id.MainViewPager);
+
+            viewPager.CurrentItem = 2;
         }
     }
 }
