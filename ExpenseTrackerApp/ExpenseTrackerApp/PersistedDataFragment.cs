@@ -20,7 +20,7 @@ namespace ExpenseTrackerApp
         Task<Account> _getAccountTask;
         Task<List<ExpenseItem>> _getExpenseItemsTask;
         Task<List<ExpensePeriod>> _getExpensePeriodsTask;
-        Task<CurrentExpensePeriodSummary> _getCurrentExpensePeriodSummaryTask;
+        Task<List<ExpensePeriodSummary>> _getExpensePeriodSummariesTask;
 
         MobileServiceClient _client;
 
@@ -55,10 +55,10 @@ namespace ExpenseTrackerApp
                 (_getExpensePeriodsTask = ExecuteWithAuthorizationAsync(context, () => ExecuteGetExpensePeriodsAsync(), cancellationToken));
         }
 
-        public Task<CurrentExpensePeriodSummary> GetCurrentExpensePeriodSummaryAsync(Context context, CancellationToken cancellationToken)
+        public Task<List<ExpensePeriodSummary>> GetExpensePeriodSummariesAsync(Context context, CancellationToken cancellationToken)
         {
-            return _getCurrentExpensePeriodSummaryTask ??
-                (_getCurrentExpensePeriodSummaryTask = ExecuteWithAuthorizationAsync(context, () => ExecuteGetCurrentExpensePeriodSummaryAsync(), cancellationToken));
+            return _getExpensePeriodSummariesTask ??
+                (_getExpensePeriodSummariesTask = ExecuteWithAuthorizationAsync(context, () => ExecuteGetExpensePeriodSummariesAsync(), cancellationToken));
         }
 
         public Task InsertExpenseItemAsync(Context context, ExpenseItem expenseItem, CancellationToken cancellationToken)
@@ -129,7 +129,7 @@ namespace ExpenseTrackerApp
 
         public void InvalidateSummary()
         {
-            _getCurrentExpensePeriodSummaryTask = null;
+            _getExpensePeriodSummariesTask = null;
         }
 
         private async Task<T> ExecuteWithAuthorizationAsync<T>(Context context, Func<Task<T>> action, CancellationToken cancellationToken)
@@ -200,9 +200,9 @@ namespace ExpenseTrackerApp
                 .ToListAsync();
         }
 
-        private Task<CurrentExpensePeriodSummary> ExecuteGetCurrentExpensePeriodSummaryAsync()
+        private Task<List<ExpensePeriodSummary>> ExecuteGetExpensePeriodSummariesAsync()
         {
-            return _client.InvokeApiAsync<CurrentExpensePeriodSummary>("Summary/CurrentExpensePeriod", HttpMethod.Get, null);
+            return _client.InvokeApiAsync<List<ExpensePeriodSummary>>("Summary/ExpensePeriods", HttpMethod.Get, null);
         }
     }
 }

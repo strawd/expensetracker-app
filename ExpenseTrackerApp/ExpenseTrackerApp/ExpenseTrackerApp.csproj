@@ -97,7 +97,7 @@
     <Compile Include="AddOrEditExpenseActivity.cs" />
     <Compile Include="CheckableLinearLayout.cs" />
     <Compile Include="DataObjects\Account.cs" />
-    <Compile Include="DataObjects\CurrentExpensePeriodSummary.cs" />
+    <Compile Include="DataObjects\ExpensePeriodSummary.cs" />
     <Compile Include="DataObjects\ExpenseItem.cs" />
     <Compile Include="DataObjects\ExpensePeriod.cs" />
     <Compile Include="DataObjects\UserProfile.cs" />

@@ -4,7 +4,7 @@ using System;
 
 namespace ExpenseTrackerApp.DataObjects
 {
-    class CurrentExpensePeriodSummary
+    class ExpensePeriodSummary
     {
         public decimal AmountAvailable { get; set; }
 
