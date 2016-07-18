@@ -11,6 +11,7 @@ namespace ExpenseTrackerApp
         const int ExpensesPosition = 1;
         const int SchedulePosition = 2;
 
+        SummaryFragment _summaryFragment;
         ExpensesFragment _expensesFragment;
         ScheduleFragment _scheduleFragment;
 
@@ -26,7 +27,7 @@ namespace ExpenseTrackerApp
             switch (position)
             {
                 case SummaryPosition:
-                    return new SummaryFragment();
+                    return (_summaryFragment = new SummaryFragment());
                 case ExpensesPosition:
                     return (_expensesFragment = new ExpensesFragment());
                 case SchedulePosition:
@@ -40,6 +41,14 @@ namespace ExpenseTrackerApp
         {
             _expensesFragment?.FinishActionMode();
             _scheduleFragment?.FinishActionMode();
+        }
+
+        public async void OnPageSelected(int position)
+        {
+            if (position == SummaryPosition && _summaryFragment != null)
+            {
+                await _summaryFragment.InitializeSummaryAsync(_summaryFragment.View);
+            }
         }
     }
 }

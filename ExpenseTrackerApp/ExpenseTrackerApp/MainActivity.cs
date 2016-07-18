@@ -158,6 +158,8 @@ namespace ExpenseTrackerApp
             adapter.FinishActionMode();
 
             ActionBar.SetSelectedNavigationItem(e.Position);
+
+            adapter.OnPageSelected(e.Position);
         }
 
         private void OnSummaryTabSelected(object sender, ActionBar.TabEventArgs e)

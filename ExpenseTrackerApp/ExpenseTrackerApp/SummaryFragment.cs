@@ -53,7 +53,7 @@ namespace ExpenseTrackerApp
             _refreshing = false;
         }
 
-        private async Task InitializeSummaryAsync(View view)
+        public async Task InitializeSummaryAsync(View view)
         {
             var localDestroyCancellationSource = _destroyCancellationSource;
 
