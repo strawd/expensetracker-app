@@ -16,6 +16,7 @@ namespace ExpenseTrackerApp
 {
     class PersistedDataFragment : Android.Support.V4.App.Fragment
     {
+        Task _authorizationTask;
         Task<UserProfile> _getOrCreateUserProfileTask;
         Task<Account> _getAccountTask;
         Task<List<ExpenseItem>> _getExpenseItemsTask;
@@ -137,7 +138,11 @@ namespace ExpenseTrackerApp
             if (_client == null)
             {
                 _client = new MobileServiceClient("https://expensetracker.azurewebsites.net");
-                await _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount);
+                await (_authorizationTask = _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount));
+            }
+            else if (_authorizationTask != null)
+            {
+                await _authorizationTask;
             }
 
             try
@@ -148,13 +153,35 @@ namespace ExpenseTrackerApp
             {
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    await _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount);
+                    await (_authorizationTask ?? (_authorizationTask = TryLoginUsingRefreshAsync(context, cancellationToken)));
 
                     return await action();
                 }
 
                 throw;
             }
+        }
+
+        private async Task TryLoginUsingRefreshAsync(Context context, CancellationToken cancellationToken)
+        {
+            bool refreshLoginSuccessful = await RefreshLoginAsync(cancellationToken);
+
+            if (!refreshLoginSuccessful && !cancellationToken.IsCancellationRequested)
+                await _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount);
+        }
+
+        private async Task<bool> RefreshLoginAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _client.InvokeApiAsync("/.auth/refresh", HttpMethod.Get, null, cancellationToken);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private Task ExecuteWithAuthorizationAsync(Context context, Func<Task> action, CancellationToken cancellationToken)
