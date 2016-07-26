@@ -40,6 +40,11 @@
   <string name="DeletingExpense">Deleting expense...</string>
   <string name="DeletingExpensePeriod">Deleting expense period...</string>
   <string name="DeleteExpensePeriodConfirmation">Delete expense period starting at {0}?</string>
-  <string name="ExpensePeriodProgressSummary">{0} remaining of {1}</string>
-  <string name="ExpensePeriodSummaryLabel">Expense period starting {0}</string>
+  <string name="CurrentExpensePeriodProgressSummary">{0} remaining of {1}</string>
+  <string name="ExpensePeriodProgressSummary">{0} saved of {1}</string>
+  <string name="CurrentExpensePeriodSummaryLabel">Current expense period ({0})</string>
+  <string name="CurrentExpensePeriodSummaryLabelWithEndDate">Current expense period ({0} - {1})</string>
+  <string name="ExpensePeriodSummaryLabel">Expense period {0} - {1}</string>
+  <string name="ExpensePeriodSummaryHistory">History</string>
+  <string name="ExpensePeriodStartDateLabel">Started {0}</string>
 </resources>

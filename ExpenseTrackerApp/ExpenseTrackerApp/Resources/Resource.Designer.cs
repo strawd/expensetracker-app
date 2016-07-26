@@ -2108,6 +2108,15 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f05002c
 			public const int Close = 2131034156;
 			
+			// aapt resource value: 0x7f05003b
+			public const int CurrentExpensePeriodProgressSummary = 2131034171;
+			
+			// aapt resource value: 0x7f05003d
+			public const int CurrentExpensePeriodSummaryLabel = 2131034173;
+			
+			// aapt resource value: 0x7f05003e
+			public const int CurrentExpensePeriodSummaryLabelWithEndDate = 2131034174;
+			
 			// aapt resource value: 0x7f050026
 			public const int DateHint = 2131034150;
 			
@@ -2153,11 +2162,17 @@ namespace ExpenseTrackerApp
 			// aapt resource value: 0x7f050034
 			public const int EditExpensePeriodDoneCommand = 2131034164;
 			
-			// aapt resource value: 0x7f05003b
-			public const int ExpensePeriodProgressSummary = 2131034171;
-			
 			// aapt resource value: 0x7f05003c
-			public const int ExpensePeriodSummaryLabel = 2131034172;
+			public const int ExpensePeriodProgressSummary = 2131034172;
+			
+			// aapt resource value: 0x7f050041
+			public const int ExpensePeriodStartDateLabel = 2131034177;
+			
+			// aapt resource value: 0x7f050040
+			public const int ExpensePeriodSummaryHistory = 2131034176;
+			
+			// aapt resource value: 0x7f05003f
+			public const int ExpensePeriodSummaryLabel = 2131034175;
 			
 			// aapt resource value: 0x7f05001c
 			public const int Expenses = 2131034140;

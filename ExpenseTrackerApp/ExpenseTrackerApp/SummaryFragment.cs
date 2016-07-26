@@ -104,66 +104,19 @@ namespace ExpenseTrackerApp
 
             expensePeriodSummaryLayout.RemoveAllViews();
 
-            foreach (var expensePeriodSummary in expensePeriodSummaries)
+            for (int i = 0; i < expensePeriodSummaries.Count; i++)
             {
-                var labelText = new TextView(Context);
-                var labelLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
-                labelLayoutParams.BottomMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 15f, Resources.DisplayMetrics);
-                labelText.LayoutParameters = labelLayoutParams;
-                labelText.Text = string.Format(GetString(Resource.String.ExpensePeriodSummaryLabel), expensePeriodSummary.StartDate.ToString("D"));
-                expensePeriodSummaryLayout.AddView(labelText);
-
-                var amountLayout = new LinearLayout(Context);
-                var amountLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 35f, Resources.DisplayMetrics));
-                amountLayout.LayoutParameters = amountLayoutParams;
-                amountLayout.Orientation = Orientation.Horizontal;
-                expensePeriodSummaryLayout.AddView(amountLayout);
-
-                var amountRemainingView = new View(Context);
-                var amountRemainingLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MatchParent);
-                amountRemainingView.LayoutParameters = amountRemainingLayoutParams;
-                amountLayout.AddView(amountRemainingView);
-
-                var amountSpentView = new View(Context);
-                var amountSpentLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MatchParent);
-                amountSpentView.LayoutParameters = amountSpentLayoutParams;
-                amountLayout.AddView(amountSpentView);
-
-                float amountRemaining = (float)expensePeriodSummary.AmountRemaining;
-                float amountSpent = (float)(expensePeriodSummary.AmountAvailable - expensePeriodSummary.AmountRemaining);
-
-                amountRemainingLayoutParams.Weight = amountRemaining;
-                amountSpentLayoutParams.Weight = amountSpent;
-
-                Color amountRemainingColor = Color.ParseColor("#00FF00");
-                Color amountSpentColor = Color.ParseColor("#55AA55");
-                if (amountSpent > 0f)
+                if (i == 0)
                 {
-                    if (amountRemaining / amountSpent < (1f / 9f))
-                    {
-                        amountRemainingColor = Color.ParseColor("#FF3200");
-                        amountSpentColor = Color.ParseColor("#A03A23");
-                    }
-                    else if (amountRemaining / amountSpent < (1f / 3f))
-                    {
-                        amountRemainingColor = Color.ParseColor("#EDF900");
-                        amountSpentColor = Color.ParseColor("#BAC132");
-                    }
+                    CreateCurrentExpensePeriodSummary(expensePeriodSummaries[i], expensePeriodSummaryLayout);
                 }
+                else
+                {
+                    if (i == 1)
+                        CreateHistoryBanner(expensePeriodSummaryLayout);
 
-                amountRemainingView.SetBackgroundColor(amountRemainingColor);
-                amountSpentView.SetBackgroundColor(amountSpentColor);
-
-                var expensePeriodProgressText = new TextView(Context);
-                var expensePeriodProgressLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
-                expensePeriodProgressLayoutParams.BottomMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 20f, Resources.DisplayMetrics);
-                expensePeriodProgressText.LayoutParameters = expensePeriodProgressLayoutParams;
-                expensePeriodProgressText.Gravity = GravityFlags.Right;
-                expensePeriodProgressText.Text = string.Format(
-                    GetString(Resource.String.ExpensePeriodProgressSummary),
-                    expensePeriodSummary.AmountRemaining.ToString("c"),
-                    expensePeriodSummary.AmountAvailable.ToString("c"));
-                expensePeriodSummaryLayout.AddView(expensePeriodProgressText);
+                    CreateHistoricalSummary(expensePeriodSummaries[i], expensePeriodSummaryLayout);
+                }
             }
 
             progressBar.Visibility = ViewStates.Gone;
@@ -172,6 +125,138 @@ namespace ExpenseTrackerApp
 
             refreshLayout.Refreshing = false;
             _refreshing = false;
+        }
+
+        private void CreateCurrentExpensePeriodSummary(ExpensePeriodSummary expensePeriodSummary, LinearLayout expensePeriodSummaryLayout)
+        {
+            var labelText = new TextView(Context);
+            var labelLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+            labelLayoutParams.BottomMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 15f, Resources.DisplayMetrics);
+            labelText.LayoutParameters = labelLayoutParams;
+            string labelString;
+            if (expensePeriodSummary.EndDate < DateTimeOffset.Now + TimeSpan.FromDays(365d))
+            {
+                labelString = string.Format(GetString(Resource.String.CurrentExpensePeriodSummaryLabelWithEndDate), expensePeriodSummary.StartDate.ToString("d"), expensePeriodSummary.EndDate.ToString("d"));
+            }
+            else
+            {
+                labelString = string.Format(GetString(Resource.String.CurrentExpensePeriodSummaryLabel), expensePeriodSummary.StartDate.ToString("d"));
+            }
+            labelText.Text = labelString;
+            expensePeriodSummaryLayout.AddView(labelText);
+
+            var amountLayout = new LinearLayout(Context);
+            var amountLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 35f, Resources.DisplayMetrics));
+            amountLayout.LayoutParameters = amountLayoutParams;
+            amountLayout.Orientation = Orientation.Horizontal;
+            expensePeriodSummaryLayout.AddView(amountLayout);
+
+            var amountRemainingView = new View(Context);
+            var amountRemainingLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MatchParent);
+            amountRemainingView.LayoutParameters = amountRemainingLayoutParams;
+            amountLayout.AddView(amountRemainingView);
+
+            var amountSpentView = new View(Context);
+            var amountSpentLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MatchParent);
+            amountSpentView.LayoutParameters = amountSpentLayoutParams;
+            amountLayout.AddView(amountSpentView);
+
+            float amountRemaining = (float)expensePeriodSummary.AmountRemaining;
+            float amountSpent = (float)(expensePeriodSummary.AmountAvailable - expensePeriodSummary.AmountRemaining);
+
+            amountRemainingLayoutParams.Weight = amountRemaining;
+            amountSpentLayoutParams.Weight = amountSpent;
+
+            Color amountRemainingColor = Color.ParseColor("#00FF00");
+            Color amountSpentColor = Color.ParseColor("#55AA55");
+            if (amountSpent > 0f)
+            {
+                if (amountRemaining / amountSpent < (1f / 9f))
+                {
+                    amountRemainingColor = Color.ParseColor("#FF3200");
+                    amountSpentColor = Color.ParseColor("#A03A23");
+                }
+                else if (amountRemaining / amountSpent < (1f / 3f))
+                {
+                    amountRemainingColor = Color.ParseColor("#EDF900");
+                    amountSpentColor = Color.ParseColor("#BAC132");
+                }
+            }
+
+            amountRemainingView.SetBackgroundColor(amountRemainingColor);
+            amountSpentView.SetBackgroundColor(amountSpentColor);
+
+            CreateExpensePeriodProgressText(expensePeriodSummary, GetString(Resource.String.CurrentExpensePeriodProgressSummary), expensePeriodSummaryLayout);
+        }
+
+        private void CreateHistoryBanner(LinearLayout expensePeriodSummaryLayout)
+        {
+            var labelText = new TextView(Context);
+            var labelLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+            labelLayoutParams.LeftMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 5f, Resources.DisplayMetrics);
+            labelText.LayoutParameters = labelLayoutParams;
+            labelText.Text = GetString(Resource.String.ExpensePeriodSummaryHistory);
+            labelText.SetAllCaps(true);
+            labelText.SetTextSize(ComplexUnitType.Sp, 18f);
+            expensePeriodSummaryLayout.AddView(labelText);
+
+            var divider = new View(Context);
+            var dividerLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 2f, Resources.DisplayMetrics));
+            dividerLayoutParams.BottomMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 15f, Resources.DisplayMetrics);
+            divider.LayoutParameters = dividerLayoutParams;
+            divider.SetBackgroundResource(Android.Resource.Drawable.DividerHorizontalDark);
+            expensePeriodSummaryLayout.AddView(divider);
+        }
+
+        private void CreateHistoricalSummary(ExpensePeriodSummary expensePeriodSummary, LinearLayout expensePeriodSummaryLayout)
+        {
+            var labelText = new TextView(Context);
+            var labelLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+            labelLayoutParams.BottomMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 15f, Resources.DisplayMetrics);
+            labelText.LayoutParameters = labelLayoutParams;
+            labelText.Text = string.Format(GetString(Resource.String.ExpensePeriodSummaryLabel), expensePeriodSummary.StartDate.ToString("d"), expensePeriodSummary.EndDate.ToString("d"));
+            expensePeriodSummaryLayout.AddView(labelText);
+
+            var amountLayout = new LinearLayout(Context);
+            var amountLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 35f, Resources.DisplayMetrics));
+            amountLayout.LayoutParameters = amountLayoutParams;
+            amountLayout.Orientation = Orientation.Horizontal;
+            expensePeriodSummaryLayout.AddView(amountLayout);
+
+            var amountRemainingView = new View(Context);
+            var amountRemainingLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MatchParent);
+            amountRemainingView.LayoutParameters = amountRemainingLayoutParams;
+            amountLayout.AddView(amountRemainingView);
+
+            var amountSpentView = new View(Context);
+            var amountSpentLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MatchParent);
+            amountSpentView.LayoutParameters = amountSpentLayoutParams;
+            amountLayout.AddView(amountSpentView);
+
+            float amountRemaining = (float)expensePeriodSummary.AmountRemaining;
+            float amountSpent = (float)(expensePeriodSummary.AmountAvailable - expensePeriodSummary.AmountRemaining);
+
+            amountRemainingLayoutParams.Weight = amountRemaining;
+            amountSpentLayoutParams.Weight = amountSpent;
+
+            amountRemainingView.SetBackgroundColor(Color.ParseColor("#55AA55"));
+            amountSpentView.SetBackgroundColor(Color.ParseColor("#8E8E8E"));
+
+            CreateExpensePeriodProgressText(expensePeriodSummary, GetString(Resource.String.ExpensePeriodProgressSummary), expensePeriodSummaryLayout);
+        }
+
+        private void CreateExpensePeriodProgressText(ExpensePeriodSummary expensePeriodSummary, string messageFormat, LinearLayout expensePeriodSummaryLayout)
+        {
+            var expensePeriodProgressText = new TextView(Context);
+            var expensePeriodProgressLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+            expensePeriodProgressLayoutParams.BottomMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 20f, Resources.DisplayMetrics);
+            expensePeriodProgressText.LayoutParameters = expensePeriodProgressLayoutParams;
+            expensePeriodProgressText.Gravity = GravityFlags.Right;
+            expensePeriodProgressText.Text = string.Format(
+                messageFormat,
+                expensePeriodSummary.AmountRemaining.ToString("c"),
+                expensePeriodSummary.AmountAvailable.ToString("c"));
+            expensePeriodSummaryLayout.AddView(expensePeriodProgressText);
         }
 
         private void OnRefreshLayoutRefresh(object sender, EventArgs e)

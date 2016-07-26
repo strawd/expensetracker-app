@@ -13,5 +13,7 @@ namespace ExpenseTrackerApp.DataObjects
         public int ExpensesCount { get; set; }
 
         public DateTimeOffset StartDate { get; set; }
+
+        public DateTimeOffset EndDate { get; set; }
     }
 }
