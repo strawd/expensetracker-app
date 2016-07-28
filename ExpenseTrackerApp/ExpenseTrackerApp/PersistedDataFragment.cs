@@ -11,6 +11,7 @@ using Android.Content;
 using Android.OS;
 using ExpenseTrackerApp.DataObjects;
 using Microsoft.WindowsAzure.MobileServices;
+using Newtonsoft.Json.Linq;
 
 namespace ExpenseTrackerApp
 {
@@ -174,14 +175,22 @@ namespace ExpenseTrackerApp
         {
             try
             {
-                await _client.InvokeApiAsync("/.auth/refresh", HttpMethod.Get, null, cancellationToken);
+                var result = await _client.InvokeApiAsync("/.auth/refresh", HttpMethod.Get, null, cancellationToken);
+
+                var authToken = (result?["authenticationToken"] as JValue)?.Value as string;
+                if (authToken != null)
+                {
+                    _client.CurrentUser.MobileServiceAuthenticationToken = authToken;
+
+                    return true;
+                }
             }
             catch (MobileServiceInvalidOperationException)
             {
                 return false;
             }
 
-            return true;
+            return false;
         }
 
         private Task ExecuteWithAuthorizationAsync(Context context, Func<Task> action, CancellationToken cancellationToken)
