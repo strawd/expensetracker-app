@@ -140,6 +140,8 @@ namespace ExpenseTrackerApp
             {
                 _client = new MobileServiceClient("https://expensetracker.azurewebsites.net");
                 await (_authorizationTask = _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount));
+
+                _authorizationTask = null;
             }
             else if (_authorizationTask != null)
             {
@@ -154,7 +156,16 @@ namespace ExpenseTrackerApp
             {
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    await (_authorizationTask ?? (_authorizationTask = TryLoginUsingRefreshAsync(context, cancellationToken)));
+                    if (_authorizationTask == null)
+                    {
+                        await (_authorizationTask = TryLoginUsingRefreshAsync(context, cancellationToken));
+
+                        _authorizationTask = null;
+                    }
+                    else
+                    {
+                        await _authorizationTask;
+                    }
 
                     return await action();
                 }
