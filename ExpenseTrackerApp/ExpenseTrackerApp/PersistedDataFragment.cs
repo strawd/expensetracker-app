@@ -17,6 +17,11 @@ namespace ExpenseTrackerApp
 {
     class PersistedDataFragment : Android.Support.V4.App.Fragment
     {
+        const string AppUri = "https://expensetracker.azurewebsites.net";
+        const string PreferencesName = "ExpenseTrackerPreferences";
+        const string UserIdPreferenceKey = "UserId";
+        const string AuthenticationTokenPreferenceKey = "AuthToken";
+
         Task _authorizationTask;
         Task<UserProfile> _getOrCreateUserProfileTask;
         Task<Account> _getAccountTask;
@@ -25,6 +30,24 @@ namespace ExpenseTrackerApp
         Task<List<ExpensePeriodSummary>> _getExpensePeriodSummariesTask;
 
         MobileServiceClient _client;
+
+        public PersistedDataFragment(Context applicationContext)
+        {
+            ApplicationContext = applicationContext;
+
+            ISharedPreferences preferences = applicationContext.GetSharedPreferences(PreferencesName, FileCreationMode.Private);
+
+            string userId = preferences.GetString(UserIdPreferenceKey, null);
+            string authToken = preferences.GetString(AuthenticationTokenPreferenceKey, null);
+            if (userId != null && authToken != null)
+            {
+                _client = new MobileServiceClient(AppUri);
+                _client.CurrentUser = new MobileServiceUser(userId);
+                _client.CurrentUser.MobileServiceAuthenticationToken = authToken;
+            }
+        }
+
+        public Context ApplicationContext { get; set; }
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -138,10 +161,15 @@ namespace ExpenseTrackerApp
         {
             if (_client == null)
             {
-                _client = new MobileServiceClient("https://expensetracker.azurewebsites.net");
-                await (_authorizationTask = _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount));
-
-                _authorizationTask = null;
+                _client = new MobileServiceClient(AppUri);
+                try
+                {
+                    await (_authorizationTask = PerformInteractiveLoginAsync(context, cancellationToken));
+                }
+                finally
+                {
+                    _authorizationTask = null;
+                }
             }
             else if (_authorizationTask != null)
             {
@@ -158,9 +186,14 @@ namespace ExpenseTrackerApp
                 {
                     if (_authorizationTask == null)
                     {
-                        await (_authorizationTask = TryLoginUsingRefreshAsync(context, cancellationToken));
-
-                        _authorizationTask = null;
+                        try
+                        {
+                            await (_authorizationTask = TryLoginUsingRefreshAsync(context, cancellationToken));
+                        }
+                        finally
+                        {
+                            _authorizationTask = null;
+                        }
                     }
                     else
                     {
@@ -179,7 +212,16 @@ namespace ExpenseTrackerApp
             bool refreshLoginSuccessful = await RefreshLoginAsync(cancellationToken);
 
             if (!refreshLoginSuccessful && !cancellationToken.IsCancellationRequested)
-                await _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount);
+            {
+                await PerformInteractiveLoginAsync(context, cancellationToken);
+            }
+        }
+
+        private async Task PerformInteractiveLoginAsync(Context context, CancellationToken cancellationToken)
+        {
+            await _client.LoginAsync(context, MobileServiceAuthenticationProvider.MicrosoftAccount);
+
+            SaveAuthenticationInfoInPreferences();
         }
 
         private async Task<bool> RefreshLoginAsync(CancellationToken cancellationToken)
@@ -192,6 +234,8 @@ namespace ExpenseTrackerApp
                 if (authToken != null)
                 {
                     _client.CurrentUser.MobileServiceAuthenticationToken = authToken;
+
+                    SaveAuthenticationInfoInPreferences();
 
                     return true;
                 }
@@ -207,6 +251,19 @@ namespace ExpenseTrackerApp
         private Task ExecuteWithAuthorizationAsync(Context context, Func<Task> action, CancellationToken cancellationToken)
         {
             return ExecuteWithAuthorizationAsync(context, async () => { await action(); return 0; }, cancellationToken);
+        }
+
+        private void SaveAuthenticationInfoInPreferences()
+        {
+            Context applicationContext = ApplicationContext;
+            if (applicationContext != null && _client?.CurrentUser?.MobileServiceAuthenticationToken != null)
+            {
+                var preferences = applicationContext.GetSharedPreferences(PreferencesName, FileCreationMode.Private);
+                preferences.Edit()
+                    .PutString(UserIdPreferenceKey, _client.CurrentUser.UserId)
+                    .PutString(AuthenticationTokenPreferenceKey, _client.CurrentUser.MobileServiceAuthenticationToken)
+                    .Commit();
+            }
         }
 
         private async Task<UserProfile> ExecuteGetOrCreateUserProfileAsync()

@@ -35,12 +35,16 @@ namespace ExpenseTrackerApp
 
             if (_persistedDataFragment == null)
             {
-                _persistedDataFragment = new PersistedDataFragment();
+                _persistedDataFragment = new PersistedDataFragment(ApplicationContext);
 
                 SupportFragmentManager
                     .BeginTransaction()
                     .Add(_persistedDataFragment, PersistedDataFragmentTag)
                     .Commit();
+            }
+            else
+            {
+                _persistedDataFragment.ApplicationContext = ApplicationContext;
             }
 
             // Set our view from the "main" layout resource
@@ -105,6 +109,9 @@ namespace ExpenseTrackerApp
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
+            if (_persistedDataFragment != null)
+                _persistedDataFragment.ApplicationContext = null;
 
             _destroyCancellationSource?.Cancel();
         }
